@@ -1,0 +1,45 @@
+{
+  "projects": [
+    {
+      "name": "QR-Maker",
+      "description": "A minimal, modern QR code generator. Type, get a code, done.",
+      "icon": "icons/qr-maker.svg",
+      "color": "peach",
+      "demo": "https://k0rbi02.github.io/QR-Maker_/",
+      "code": "https://github.com/K0RBI02/QR-Maker_"
+    },
+    {
+      "name": "Daily Tracking",
+      "description": "A simple daily task tracker that shows your progress at a glance.",
+      "icon": "icons/daily-tracking.svg",
+      "color": "cream",
+      "demo": "https://k0rbi02.github.io/Daily-Tracking_/",
+      "code": "https://github.com/K0RBI02/Daily-Tracking_"
+    },
+    {
+      "name": "GWAY",
+      "description": "A lightweight, private web UI for a 5G router, running as a Home Assistant add-on.",
+      "icon": "icons/gway.svg",
+      "color": "apricot",
+      "code": "https://github.com/K0RBI02/GWAY"
+    },
+    {
+      "name": "ReGo",
+      "description": "An Android app for the daily commute: push alerts for delays, cancellations and platform changes on your routes.",
+      "icon": "icons/rego.svg",
+      "color": "blue",
+      "code": "https://github.com/K0RBI02/ReGo"
+    },
+    {
+      "name": "Recipe Planner",
+      "description": "A Minecraft mod: plan what you want to craft and see which ingredients you still need.",
+      "icon": "icons/recipe-planner.svg",
+      "color": "cream",
+      "links": [
+        { "label": "Modrinth ↗", "url": "https://modrinth.com/mod/recipe-planner" },
+        { "label": "CurseForge ↗", "url": "https://www.curseforge.com/minecraft/mc-mods/recipe-planner" },
+        { "label": "Code", "url": "https://github.com/K0RBI02/Recipe-Planner" }
+      ]
+    }
+  ]
+}

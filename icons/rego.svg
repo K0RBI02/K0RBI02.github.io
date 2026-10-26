@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- front of a train -->
+  <path d="M26 14 C 42 11, 58 11, 74 14 C 79 15, 81 19, 81 24 C 82 42, 81 58, 80 70 C 79 75, 76 77, 71 77 C 57 78, 43 78, 29 77 C 24 77, 21 75, 20 70 C 19 58, 18 42, 19 24 C 19 19, 21 15, 26 14 Z"/>
+  <path d="M27 26 C 42 24, 58 24, 73 26 C 74 33, 74 40, 73 46 C 58 48, 42 48, 27 46 C 26 40, 26 33, 27 26 Z"/>
+  <path d="M42 18 C 47 17, 53 17, 58 18"/>
+  <circle cx="32" cy="62" r="4" fill="currentColor"/>
+  <circle cx="68" cy="62" r="4" fill="currentColor"/>
+  <!-- wheels and rails -->
+  <path d="M32 78 L 25 89 M 68 78 L 75 89"/>
+  <path d="M16 90 C 38 89, 62 89, 84 90"/>
+</svg>

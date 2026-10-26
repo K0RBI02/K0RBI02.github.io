@@ -1,0 +1,1601 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Korbi</title>
+<meta name="description" content="Small things for the web, built by Korbi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #FAFAF8;
+    --color-grid: #ECEAE4;
+    --color-ink: #111110;
+    --color-ink-soft: #4A4744;
+    --color-accent: #FF8A4C;
+    --color-peach: #FFE1CC;
+    --color-cream: #F4EAD7;
+    --color-apricot: #FFD3B3;
+    --color-blue: #DCEBFF;
+    --color-doodle: #111110;
+
+    --font-sans: "Instrument Sans", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+    /* Spacing scale: one set of steps that grows with the screen (values at 1280px wide in brackets).
+       The script reads these too, so CSS and JS always agree. */
+    --space-1: clamp(6px, 0.625vw, 10px);    /* 8  */
+    --space-2: clamp(8px, 0.94vw, 14px);     /* 12 */
+    --space-3: clamp(12px, 1.25vw, 20px);    /* 16 */
+    --space-4: clamp(16px, 1.875vw, 30px);   /* 24 */
+    --space-5: clamp(20px, 2.5vw, 40px);     /* 32 */
+    --space-showcase: clamp(32px, 5.1vw, 96px);   /* 65: showcase to headline / window */
+    --gutter: clamp(16px, 3vw, 40px);
+    --radius: clamp(18px, 2vw, 28px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-bg: #161514;
+      --color-grid: #22201E;
+      --color-ink: #F3F1EC;
+      --color-ink-soft: #C9C5BD;
+      --color-peach: #4A3528;
+      --color-cream: #3D372D;
+      --color-apricot: #523A28;
+      --color-blue: #26344A;
+      --color-doodle: #F3F1EC;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-ink-soft);
+  }
+
+  /* World: everything on the canvas lives in here, so the camera can zoom it as one.
+     Fixed children are positioned relative to it (it has a transform). */
+  .world {
+    position: fixed;
+    inset: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+
+  /* The grid stays upright on screen: it follows the camera's move and zoom but not its turn.
+     When zoomed out, the coarse grid (one cell per 2×2 fine cells) takes over, like Canva/Figma. */
+  .grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: -1px -1px;
+    pointer-events: none;
+  }
+
+  .grid-coarse { opacity: 0; }
+
+  /* The big headline that shows up once the camera has zoomed out */
+  .big-title {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;   /* under the terminal and Korbi, frame included */
+  }
+
+  .big-title > span { display: block; }
+
+  /* Zero-size marker on the baseline of the second line, so the layout can measure it */
+  .baseline { display: inline-block; width: 0; height: 0; }
+
+  .underline { position: relative; }
+
+  .underline svg {
+    position: absolute;
+    left: 0;
+    bottom: 0.2em;   /* the inline box reaches below the baseline; this sits the line just under the letters */
+    width: 100%;
+    height: 0.12em;
+    overflow: visible;
+  }
+
+  /* Canva-style selection frame around the headline; --inv keeps its lines thin at any zoom */
+  .selection {
+    position: absolute;
+    inset: calc(-14px * var(--inv, 1));
+    border: calc(2px * var(--inv, 1)) solid var(--color-accent);
+    opacity: var(--sel, 0);
+  }
+
+  .selection i {
+    position: absolute;
+    width: calc(12px * var(--inv, 1));
+    height: calc(12px * var(--inv, 1));
+    background: var(--color-bg);
+    border: calc(2px * var(--inv, 1)) solid var(--color-accent);
+    border-radius: 50%;
+  }
+
+  .selection i:nth-child(1) { left: 0; top: 0; transform: translate(-50%, -50%); }
+  .selection i:nth-child(2) { right: 0; top: 0; transform: translate(50%, -50%); }
+  .selection i:nth-child(3) { left: 0; bottom: 0; transform: translate(-50%, 50%); }
+  .selection i:nth-child(4) { right: 0; bottom: 0; transform: translate(50%, 50%); }
+
+  /* Project showcase on the free space of the canvas. It is laid out in screen pixels:
+     the script counter-scales and counter-turns it against the camera, and sizes
+     --tile (detail view) and --card (overview) from the free space it gets. */
+  .showcase {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    transform-origin: 50% 50%;
+  }
+
+  /* Content hugs the top-left of the box, so the gap to the headline is exactly the one the script sets */
+  .spotlight,
+  .overview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .spotlight { gap: calc(var(--tile, 180px) * 0.18); padding-left: var(--space-2); }
+
+  .tile {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: var(--tile, 180px);
+    aspect-ratio: 1;
+    border-radius: 16%;
+    box-shadow: 0 18px 40px -22px rgba(17, 17, 16, .35);
+    color: var(--color-doodle);
+  }
+
+  .tile svg { width: 54%; height: auto; overflow: visible; }
+
+  .tile--peach { background: var(--color-peach); }
+  .tile--cream { background: var(--color-cream); }
+  .tile--apricot { background: var(--color-apricot); }
+  .tile--blue { background: var(--color-blue); }
+
+  .spotlight-text { min-width: 0; }
+
+  .spotlight-text h2 {
+    margin: 0.2em 0 0.35em;
+    font-size: calc(var(--tile, 180px) * 0.24);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .spotlight-text .label {
+    margin: 0;
+    max-width: 38ch;
+    font-size: max(13px, calc(var(--tile, 180px) * 0.07));
+    line-height: 1.6;
+  }
+
+  .spotlight-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    margin-top: 1.2em;
+    font-size: max(13px, calc(var(--tile, 180px) * 0.065));
+  }
+
+  .spotlight-links .hud-pill { font-size: inherit; padding: 0.7em 1.25em; }
+
+  /* Fixed on the HUD's line; the script sets its width (up to the GitHub button) and height */
+  .next-hint {
+    position: fixed;
+    left: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .next-tap { display: none; }
+
+  @media (hover: none) {
+    .next-key { display: none; }
+    .next-tap { display: inline; }
+  }
+
+  /* Overview at the end: one flip card per project, links on the back */
+  /* Cards sit towards the window (right) and a little lower than the detail view */
+  .overview {
+    top: calc(var(--card, 160px) * 0.3);
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-content: flex-start;
+    gap: calc(var(--card, 160px) * 0.16);
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    width: var(--card, 160px);
+    perspective: 900px;
+    cursor: pointer;
+  }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    transform-style: preserve-3d;
+    transition: transform .6s cubic-bezier(.2, .8, .2, 1);
+  }
+
+  /* Flip only where there is a mouse; touch devices open the sheet instead */
+  @media (hover: hover) {
+    .card:hover .card-inner,
+    .card:focus-within .card-inner { transform: rotateY(180deg); }
+  }
+
+  .card.is-flipped .card-inner { transform: rotateY(180deg); }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .card-face.tile { width: 100%; }
+
+  .card-back {
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-1);
+    pointer-events: none;
+    font-size: max(12px, calc(var(--card, 160px) * 0.075));
+  }
+
+  @media (hover: hover) {
+    .card:hover .card-back,
+    .card:focus-within .card-back { pointer-events: auto; }
+  }
+
+  .card.is-flipped .card-back { pointer-events: auto; }
+
+  .card-back .hud-pill { font-size: inherit; padding: 0.65em 1.2em; }
+
+  /* Project sheet for touch devices: opens from a tap on a card, at normal reading size */
+  .sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: rgba(17, 17, 16, .35);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .sheet {
+    position: fixed;
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: var(--space-3);
+    z-index: 21;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: var(--space-5);
+    border-radius: 24px;
+    background: var(--color-bg);
+    box-shadow: 0 30px 60px -20px rgba(17, 17, 16, .4);
+    opacity: 0;
+    pointer-events: none;
+    --tile: 88px;
+  }
+
+  .sheet-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+
+  .sheet h2 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .sheet .label { margin: 0; font-size: 14px; line-height: 1.6; }
+  .sheet .spotlight-links { font-size: 14px; }
+
+  /* Own row at the top right, so long project names never run under it */
+  .sheet { display: flex; flex-direction: column; }
+
+  .sheet-close {
+    align-self: flex-end;
+    margin: calc(-1 * var(--space-2)) calc(-1 * var(--space-2)) var(--space-2) 0;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .card .label { margin: 0; font-size: max(13px, calc(var(--card, 160px) * 0.08)); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-inner { transition: none; }
+  }
+
+  @media (max-width: 720px) {
+    .spotlight { flex-direction: column; align-items: flex-start; }
+    .overview { justify-content: center; }   /* the window is above, not beside, on phones */
+  }
+
+  /* Bottom-right corner, like Canva: GitHub link next to the zoom readout */
+  .hud {
+    position: fixed;
+    right: var(--gutter);
+    bottom: var(--gutter);
+    display: flex;
+    gap: var(--space-1);
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .hud-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0.7em 1.25em;
+    border-radius: 999px;
+    background: var(--color-ink);
+    color: var(--color-bg);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-decoration: none;
+    transition: background-color .25s ease, color .25s ease;
+  }
+
+  a.hud-pill:hover { background: var(--color-accent); color: #111110; }
+  .hud-pill svg { width: 16px; height: 16px; }
+
+  .zoom-pill {
+    min-width: 62px;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  /* Scene: sits above the headline (and its selection frame) on the canvas; Korbi (z-index 3) stays on top */
+  .scene {
+    position: fixed;
+    z-index: 1;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: var(--gutter);
+  }
+
+  /* Terminal */
+  .terminal {
+    --term-bg: #161514;
+    --term-bar: #201E1C;
+    --term-ink: #ECE9E3;
+    --term-dim: #A39E95;
+
+    position: relative;
+    z-index: 2;
+    margin-top: 16dvh;   /* room above the window for Korbi */
+    width: min(780px, 100%);
+    height: min(460px, 60dvh);
+    background: var(--term-bg);
+    color: var(--term-ink);
+    border-radius: var(--radius);
+    box-shadow: 0 30px 60px -30px rgba(17, 17, 16, .45);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .terminal { box-shadow: 0 0 0 1px #2E2C29, 0 30px 60px -30px rgba(0, 0, 0, .8); }
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 14px 18px;
+    background: var(--term-bar);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--term-dim);
+  }
+
+  .terminal-bar i {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #3A3734;
+  }
+
+  .terminal-bar span { margin: 0 auto; padding-right: 60px; }
+
+  .terminal-body {
+    flex: 1;
+    margin: 0;
+    padding: 20px 22px;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .t-user, .t-bar, .t-name { color: var(--color-accent); }
+  .t-path, .t-dim, .t-venv { color: var(--term-dim); }
+  .t-bar-rest { color: #3A3734; }
+  .t-name { font-weight: 500; }
+
+  .t-ghost { color: #7A756D; }
+  .ghost-tap { display: none; }
+
+  @media (hover: none) {
+    .ghost-key { display: none; }
+    .ghost-tap { display: inline; }
+  }
+
+  /* Canvas that plays the ASCII kick-about over the terminal's body */
+  .ascii-stage {
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: .6em;
+    height: 1.15em;
+    margin-left: 1px;
+    vertical-align: text-bottom;
+    background: var(--term-ink);
+    animation: blink 1s steps(1) infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .skip {
+    position: fixed;
+    bottom: var(--gutter);
+    left: 0;
+    right: 0;
+    margin: 0;
+    text-align: center;
+  }
+
+  .skip-tap { display: none; }
+
+  @media (hover: none) {
+    .skip-key { display: none; }
+    .skip-tap { display: inline; }
+  }
+
+  /* Korbi leans over the terminal. The box's bottom edge sits on the window edge while he
+     climbs up, then drops lower so his hands can grip over the title bar. */
+  .peek {
+    position: fixed;
+    z-index: 3;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .peek-body {
+    position: absolute;
+    inset: 0 0 auto 0;
+    will-change: transform;
+  }
+
+  .peek img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    will-change: opacity;
+  }
+
+  @media (max-width: 720px) {
+    .terminal { height: min(440px, 56dvh); }
+    .terminal-body { font-size: 12.5px; padding: 16px; }
+    .terminal-bar span { padding-right: 40px; }
+  }
+</style>
+</head>
+<body>
+  <div class="grid" id="grid-fine"></div>
+  <div class="grid grid-coarse" id="grid-coarse"></div>
+
+  <div class="world" id="world">
+
+    <main class="scene">
+      <div class="terminal" id="terminal" aria-hidden="true">
+        <div class="terminal-bar"><i></i><i></i><i></i><span>korbi@fedora: ~/portfolio</span></div>
+        <pre class="terminal-body" id="term"></pre>
+      </div>
+    </main>
+
+    <div class="peek" id="peek" role="img" aria-label="Korbi, leaning over the terminal">
+      <div class="peek-body" id="peek-body">
+        <img id="pose-lean" alt="">
+        <img id="pose-wave" alt="" style="opacity:0">
+      </div>
+    </div>
+
+    <section class="showcase" id="showcase" aria-label="Projects">
+      <div class="spotlight" id="spotlight" aria-live="polite"></div>
+      <nav class="overview" id="overview"></nav>
+    </section>
+
+    <h1 class="big-title" id="big-title">
+      <span>Small things</span>
+      <span>for the <span class="underline">web<svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M3 13 C 40 5, 80 17, 120 9 S 180 6, 197 11" fill="none" stroke="var(--color-accent)" stroke-width="7" stroke-linecap="round"/></svg></span><span id="dot">.</span><span class="baseline" id="baseline"></span></span>
+      <span class="selection" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    </h1>
+  </div>
+
+  <p class="skip label" id="skip"><span class="skip-key">press any key</span><span class="skip-tap">tap</span> to skip</p>
+  <div class="sheet-backdrop" id="sheet-backdrop"></div>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Project details"></section>
+
+  <p class="label next-hint" id="next-hint" aria-live="polite"><span><span class="next-key">click or press enter</span><span class="next-tap">tap</span> for <span id="next-what">next</span> →</span></p>
+
+  <div class="hud" id="hud">
+    <a class="hud-pill" href="https://github.com/K0RBI02" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+      GitHub
+    </a>
+    <p class="hud-pill zoom-pill" id="zoom-pill" aria-hidden="true">100%</p>
+  </div>
+
+<script>
+  (() => {
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const terminal = document.getElementById('terminal');
+    const term = document.getElementById('term');
+    const skipHint = document.getElementById('skip');
+    const peek = document.getElementById('peek');
+    const peekBody = document.getElementById('peek-body');
+    const poses = {
+      lean: document.getElementById('pose-lean'),
+      wave: document.getElementById('pose-wave')
+    };
+
+    // Both pose images are cut into the same frame (source pixels), lined up on the window edge.
+    // origin = top-left of the frame in the source image; the edge (bottom of the shirt) lands at EDGE_Y.
+    const FRAME = { w: 1180, h: 1030 };
+    const EDGE_Y = 930;
+    const SOURCES = {
+      lean: { src: 'korbi-lean.webp', x: 85, y: 85 },    // edge at y=1015 in the source
+      wave: { src: 'korbi-wave.webp', x: 120, y: 122 }   // edge at y=1052 in the source
+    };
+
+    let skipping = false;
+
+    // Current px value of a spacing variable from the CSS scale (they use clamp(), so measure them)
+    function space(name) {
+      const probe = document.createElement('div');
+      probe.style.cssText = `position:absolute;visibility:hidden;width:var(${name})`;
+      document.body.appendChild(probe);
+      const px = probe.getBoundingClientRect().width;
+      probe.remove();
+      return px;
+    }
+
+    // ---------- Cut the poses out of their white background ----------
+    // Flood-fills the neutral white (254/254/254) from the borders, so the warm off-white shirt stays opaque,
+    // then softens the edge pixels that are still close to white.
+    async function cutOut({ src, x: ox, y: oy }) {
+      const img = new Image();
+      img.src = src;
+      await img.decode();
+      const W = FRAME.w, H = FRAME.h;
+      const c = document.createElement('canvas');
+      c.width = W; c.height = H;
+      const g = c.getContext('2d');
+      g.fillStyle = '#FEFEFE';
+      g.fillRect(0, 0, W, H);
+      g.drawImage(img, ox, oy, W, H, 0, 0, W, H);
+      const data = g.getImageData(0, 0, W, H);
+      const px = data.data;
+      const whiteness = i => Math.min(px[i], px[i + 1], px[i + 2]);
+      const isBg = i => whiteness(i) >= 246 && Math.max(px[i], px[i + 1], px[i + 2]) - whiteness(i) <= 3;
+
+      const seen = new Uint8Array(W * H);
+      const stack = [];
+      for (let x = 0; x < W; x++) stack.push(x, (H - 1) * W + x);
+      for (let y = 0; y < H; y++) stack.push(y * W, y * W + W - 1);
+      while (stack.length) {
+        const p = stack.pop();
+        if (seen[p] || !isBg(p * 4)) continue;
+        seen[p] = 1;
+        px[p * 4 + 3] = 0;
+        const x = p % W, y = (p / W) | 0;
+        if (x > 0) stack.push(p - 1);
+        if (x < W - 1) stack.push(p + 1);
+        if (y > 0) stack.push(p - W);
+        if (y < H - 1) stack.push(p + W);
+      }
+
+      for (let p = 0; p < W * H; p++) {
+        if (seen[p]) continue;
+        const x = p % W, y = (p / W) | 0;
+        const touches = (x > 0 && seen[p - 1]) || (x < W - 1 && seen[p + 1]) || (y > 0 && seen[p - W]) || (y < H - 1 && seen[p + W]);
+        if (!touches) continue;
+        const w = whiteness(p * 4);
+        if (w > 200) px[p * 4 + 3] = Math.round(255 * Math.max(0, (255 - w) / 55));
+      }
+
+      g.putImageData(data, 0, 0);
+      return c.toDataURL('image/png');
+    }
+
+    // ---------- Peek: layout + motion ----------
+    const state = {
+      lift: 0, liftTarget: 0,   // 0 = behind the window, 1 = up at the edge
+      grabbed: false,           // hands over the edge
+      dip: 0,                   // little drop when the hands catch the edge
+      wave: 0, waveTarget: 0    // crossfade lean -> wave
+    };
+    let scale = 0.25;           // px per source pixel
+
+    function layout() {
+      const box = terminal.getBoundingClientRect();
+      const width = Math.round(Math.min(320, box.width * 0.42, (box.top - space('--space-2')) / EDGE_Y * FRAME.w));
+      scale = width / FRAME.w;
+      peek.style.width = width + 'px';
+      peek.style.left = Math.round(Math.min(box.right - width * 0.92, innerWidth - width)) + 'px';
+      peek.style.top = Math.round(box.top - EDGE_Y * scale) + 'px';
+      peekBody.style.height = Math.round(FRAME.h * scale) + 'px';
+      setClip();
+    }
+
+    // While climbing, the box ends at the window edge; once he grips it, it reaches over the title bar
+    function setClip() {
+      const below = state.grabbed ? FRAME.h - EDGE_Y : 0;
+      peek.style.height = Math.round((EDGE_Y + below) * scale) + 'px';
+    }
+
+    function render(now) {
+      const t = now / 1000;
+      const k = skipping ? 1 : 0.09;
+      state.lift += (state.liftTarget - state.lift) * k;
+      if (Math.abs(state.liftTarget - state.lift) < 0.002) state.lift = state.liftTarget;
+
+      // Hands catch the edge right as he arrives
+      if (!state.grabbed && state.liftTarget === 1 && state.lift > 0.97) {
+        state.grabbed = true;
+        state.dip = 1;
+        setClip();
+      }
+      state.dip += (0 - state.dip) * 0.12;
+
+      state.wave += (state.waveTarget - state.wave) * (skipping ? 1 : 0.12);
+      poses.lean.style.opacity = (1 - state.wave).toFixed(3);
+      poses.wave.style.opacity = state.wave.toFixed(3);
+
+      const hidden = EDGE_Y * scale;                        // fully below the window edge
+      const breathe = state.grabbed ? Math.sin(t * 1.7) * 2 : 0;
+      const y = hidden * (1 - state.lift) + state.dip * 8 + breathe;
+      peekBody.style.transform = `translateY(${y.toFixed(1)}px)`;
+
+      requestAnimationFrame(render);
+    }
+
+    // ---------- Terminal helpers ----------
+    const wait = ms => skipping ? Promise.resolve() : new Promise(r => setTimeout(r, ms));
+    const prompt = '<span class="t-user">korbi@fedora</span>:<span class="t-path">~/portfolio</span>$ ';
+    const venvPrompt = '<span class="t-venv">(.venv)</span> ' + prompt;
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+
+    function line(html = '') {
+      const el = document.createElement('div');
+      el.innerHTML = html;
+      term.appendChild(el);
+      el.appendChild(cursor);
+      return el;
+    }
+
+    async function type(el, text, speed = 45) {
+      const out = document.createTextNode('');
+      el.insertBefore(out, cursor);
+      for (const ch of text) {
+        out.data += ch;
+        await wait(speed + Math.random() * speed * 0.8);
+      }
+    }
+
+    async function progress(el, total = innerWidth < 720 ? 12 : 30) {
+      const bar = document.createElement('span');
+      el.insertBefore(bar, cursor);
+      // Uneven like a real download: steady chunks, one short stall around the middle
+      const stallAt = Math.round(total * 0.6);
+      for (let i = 1; i <= total; i++) {
+        const kb = (42 * i / total).toFixed(1);
+        bar.innerHTML = '   <span class="t-bar">' + '━'.repeat(i) + '</span><span class="t-bar-rest">' +
+          '━'.repeat(total - i) + '</span> <span class="t-dim">' + kb + '/42.0 kB</span>';
+        await wait((2200 / total) * (0.6 + Math.random() * 0.8) + (i === stallAt ? 650 : 0));
+      }
+    }
+
+    // ---------- The story ----------
+    // Paced for first-time visitors; any key or tap skips to the end.
+    async function story() {
+      await wait(600);
+      let l = line(prompt);
+      await type(l, 'python -m venv .venv && source .venv/bin/activate', 32);
+      await wait(600);
+
+      l = line(venvPrompt);
+      await wait(450);
+      await type(l, 'pip install korbi', 50);
+      await wait(500);
+      line('<span class="t-dim">Collecting korbi</span>');
+      await wait(900);
+      line('  Downloading korbi-1.0.0-py3-none-any.whl (42 kB)');
+      await wait(300);
+      await progress(line());
+      await wait(400);
+      line('Installing collected packages: korbi');
+      await wait(1100);
+      line('Successfully installed korbi-1.0.0');
+      await wait(1000);
+
+      l = line(venvPrompt);
+      await wait(800);
+      await type(l, 'korbi spawn', 95);
+      await wait(600);
+      line('<span class="t-dim">spawning korbi …</span>');
+
+      // Korbi climbs up behind the window, grabs the edge and reads along
+      await wait(700);
+      state.liftTarget = 1;
+      await wait(3200);
+
+      // ...then looks up and waves right as he says "Hey"
+      l = line('<span class="t-name">korbi</span> <span class="t-dim">›</span> ');
+      await wait(500);
+      await type(l, 'Hey,', 48);
+      state.waveTarget = 1;
+      await type(l, " I'm Korbi and I build small things for the web.", 48);
+      await wait(800);
+      // Last prompt with ghost text (like a shell autosuggestion) behind the cursor
+      const last = line(venvPrompt);
+      const ghost = document.createElement('span');
+      ghost.className = 't-ghost';
+      ghost.innerHTML = '<span class="ghost-key">press enter for more</span><span class="ghost-tap">tap for more</span>';
+      last.appendChild(ghost);
+
+      skipHint.style.transition = 'opacity .4s ease';
+      skipHint.style.opacity = 0;
+      waitForMore();
+    }
+
+    // Enter (or a tap on the terminal) continues past the intro
+    function waitForMore() {
+      const onKey = e => { if (e.key === 'Enter') more(); };
+      addEventListener('keydown', onKey);
+      terminal.addEventListener('click', more);
+      function more() {
+        removeEventListener('keydown', onKey);
+        terminal.removeEventListener('click', more);
+        document.querySelector('.t-ghost')?.remove();
+        zoomOut();
+      }
+    }
+
+    // ---------- Camera: zoom out onto the canvas ----------
+    // The camera keeps the terminal's centre (cx, cy) at screen point (px, py), zoomed by s and turned by a.
+    const world = document.getElementById('world');
+    const bigTitle = document.getElementById('big-title');
+    const hud = document.getElementById('hud');
+    const zoomPill = document.getElementById('zoom-pill');
+    const cam = { s: 1, a: 0, px: 0, py: 0, cx: 0, cy: 0 };
+    const TILT = -5 * Math.PI / 180;   // the canvas ends up slightly askew
+    const GRID = 32;                   // fine grid cell, px at 100 %
+    const gridFine = document.getElementById('grid-fine');
+    const gridCoarse = document.getElementById('grid-coarse');
+    let zoomed = false;
+
+    function zoomOut() {
+      zoomed = true;
+      const W = innerWidth, H = innerHeight;
+      const box = terminal.getBoundingClientRect();
+      const korbiBox = peek.getBoundingClientRect();
+      cam.cx = cam.px = box.left + box.width / 2;
+      cam.cy = cam.py = box.top + box.height / 2;
+
+      // Target: the terminal stays as it is, small; Korbi stands right next to the "." of "web.",
+      // with the window edge he holds on to lying on the baseline of the second line
+      const S = Math.min(0.55, 0.42 * W / box.width, 0.36 * H / (box.bottom - korbiBox.top));
+      const hudSpace = hud.offsetHeight + space('--space-4');   // keep the bottom-right pills clear
+      const gapX = Math.max(space('--space-3'), W * 0.03);   // between the "." and Korbi
+      const gapY = Math.max(space('--space-2'), H * 0.03);   // window edge sits this far below the baseline
+      const rightOfDot = gapX + (box.right - korbiBox.left) * S; // Korbi + the rest of the window
+      const termH = box.height * S;
+
+      // Headline size on screen: as big as fits next to Korbi and above the window
+      const dot = document.getElementById('dot');
+      const baseline = document.getElementById('baseline');
+      bigTitle.style.fontSize = '100px';
+      const dotRightPerPx = (dot.offsetLeft + dot.offsetWidth) / 100;
+      const widthPerPx = Math.max(bigTitle.offsetWidth, dot.offsetLeft + dot.offsetWidth) / 100;
+      const baselinePerPx = baseline.offsetTop / 100;
+      const font = Math.min(
+        (W * 0.9 - rightOfDot) / dotRightPerPx,
+        W * 0.9 / widthPerPx,
+        (H * 0.88 - hudSpace - gapY - termH) / baselinePerPx
+      );
+      bigTitle.style.fontSize = (font / S) + 'px';
+      bigTitle.style.setProperty('--inv', (1 / S).toFixed(3));
+
+      // Lay out on screen: headline + whatever sticks out right of the dot, centred as one block
+      const titleW = bigTitle.offsetWidth * S;
+      const dotRight = (dot.offsetLeft + dot.offsetWidth) * S;
+      const baseY = baseline.offsetTop * S;
+      const blockW = Math.max(titleW, dotRight + rightOfDot);
+      const x0 = (W - blockW) / 2;
+      const y0 = (H - hudSpace - (baseY + gapY + termH)) / 2;
+
+      // Terminal centre on screen, from where Korbi's left edge and the window's top edge go
+      const PX = x0 + dotRight + gapX + (cam.cx - korbiBox.left) * S;
+      const PY = y0 + baseY + gapY + (cam.cy - box.top) * S;
+
+      // Screen -> world for the final camera: undo the move, the turn and the zoom
+      const toWorld = (x, y) => {
+        const dx = (x - PX) / S, dy = (y - PY) / S;
+        const c = Math.cos(-TILT), s = Math.sin(-TILT);
+        return [cam.cx + dx * c - dy * s, cam.cy + dx * s + dy * c];
+      };
+      const [wx, wy] = toWorld(x0, y0);
+      bigTitle.style.left = wx + 'px';
+      bigTitle.style.top = wy + 'px';
+      bigTitle.style.transformOrigin = '0 0';
+      bigTitle.style.transform = `rotate(${-TILT}rad)`;   // straight on screen while the canvas is askew
+
+      const fade = { title: 0, sel: 0, hud: 0 };
+      const start = performance.now();
+
+      (function tick(now) {
+        // Camera: lerp toward the target, zoom in log space so it feels even; the turn follows the zoom
+        const k = reduced ? 1 : 0.055;
+        const ls = Math.log(cam.s) + (Math.log(S) - Math.log(cam.s)) * k;
+        cam.s = Math.exp(ls);
+        cam.px += (PX - cam.px) * k;
+        cam.py += (PY - cam.py) * k;
+
+        // How far the zoom has come (0..1)
+        const progress = Math.log(cam.s) / Math.log(S);
+        const t = now - start;
+
+        cam.a = TILT * progress;
+        applyCamera();
+
+        // Headline fades in late in the zoom; the selection frame shows briefly, like after a paste
+        const fk = reduced ? 1 : 0.08;
+        fade.hud += (1 - fade.hud) * fk;
+        if (progress > 0.75) fade.title += (1 - fade.title) * fk;
+        const selTarget = progress > 0.85 && t < 1500 ? 1 : 0;
+        fade.sel += (selTarget - fade.sel) * fk;
+
+        bigTitle.style.opacity = fade.title.toFixed(3);
+        bigTitle.style.setProperty('--sel', fade.sel.toFixed(3));
+        hud.style.opacity = fade.hud.toFixed(3);
+        hud.style.visibility = 'visible';
+
+        const settled = Math.abs(cam.s - S) < 0.0005 && 1 - fade.title < 0.002 && fade.sel < 0.002 && t > 1500;
+        if (!settled) requestAnimationFrame(tick);
+        else setTimeout(focusFreeSpace, reduced ? 0 : 900);   // short hold, then move on
+      })(start);
+
+      // Next stop: the empty bottom-left of the dashboard, between the headline, the window and the HUD
+      function focusFreeSpace() {
+        const ZOOM = 1.4;    // a gentle push in; headline and window stay partly in view
+        const SPACE = space('--space-showcase');   // showcase to headline / window (about 65px at 1280 wide)
+        const EDGE = space('--space-3');            // keep clear of the screen edges
+
+        // Edges of the free space as they are on screen now (before the push in)
+        const titleBottom = bigTitle.querySelector('.underline svg').getBoundingClientRect().bottom;
+        const windowRect = terminal.getBoundingClientRect();     // the tilted window's bounding box
+        const windowLeft = windowRect.left;
+        const windowBottom = windowRect.bottom;
+        const narrow = W < 720 || windowLeft - x0 < W * 0.3;    // phones: the space is below the window
+        const free = {
+          left: narrow ? 0 : x0,
+          right: narrow ? W : windowLeft,
+          top: narrow ? windowBottom : titleBottom,
+          bottom: H - hudSpace
+        };
+        const fx = (free.left + free.right) / 2;
+        const fy = (free.top + free.bottom) / 2;
+
+        // Where those edges land once the camera has pushed in on (fx, fy), and the showcase box inside
+        const after = (p, f, c) => c + (p - f) * ZOOM;
+        const q = {
+          left: Math.max(EDGE, narrow ? EDGE : after(free.left, fx, W / 2)),
+          right: Math.min(W - EDGE, narrow ? W - EDGE : after(free.right, fx, W / 2) - SPACE),
+          top: after(free.top, fy, H / 2) + SPACE,
+          bottom: Math.min(H - hudSpace - EDGE, after(free.bottom, fy, H / 2))
+        };
+
+        // Re-pivot the camera on (fx, fy) without moving anything on screen
+        const before = (qv, f, c) => f + (qv - c) / ZOOM;
+        const centre = toWorld(before((q.left + q.right) / 2, fx, W / 2), before((q.top + q.bottom) / 2, fy, H / 2));
+        [cam.cx, cam.cy] = toWorld(fx, fy);
+        cam.px = fx;
+        cam.py = fy;
+        const S2 = S * ZOOM;
+        placeShowcase(S2, q.right - q.left, q.bottom - q.top, centre);
+        flyTo(W / 2, H / 2, S2).then(runShowcase);
+      }
+    }
+
+    // Lerp the camera to keep its pivot at (px, py) with zoom s; the turn stays as it is
+    function flyTo(px, py, s) {
+      return new Promise(resolve => {
+        (function tick() {
+          const k = reduced ? 1 : 0.05;
+          cam.s = Math.exp(Math.log(cam.s) + (Math.log(s) - Math.log(cam.s)) * k);
+          cam.px += (px - cam.px) * k;
+          cam.py += (py - cam.py) * k;
+          applyCamera();
+          const done = Math.abs(cam.s - s) < 0.0005 && Math.abs(cam.px - px) < 0.3 && Math.abs(cam.py - py) < 0.3;
+          if (done) resolve(); else requestAnimationFrame(tick);
+        })();
+      });
+    }
+
+    // ---------- Projects showcase (data from projects.json) ----------
+    const showcase = document.getElementById('showcase');
+    const spotlight = document.getElementById('spotlight');
+    const overview = document.getElementById('overview');
+    const box2 = { w: 0, h: 0 };
+
+    // Centre the showcase on a world point and cancel the camera's zoom and turn,
+    // so its CSS pixels are screen pixels once the camera arrives at zoom s
+    function placeShowcase(s, w, h, [cx, cy]) {
+      box2.w = w;
+      box2.h = h;
+      Object.assign(showcase.style, {
+        width: w + 'px',
+        height: h + 'px',
+        left: (cx - w / 2) + 'px',
+        top: (cy - h / 2) + 'px',
+        transform: `rotate(${-TILT}rad) scale(${(1 / s).toFixed(5)})`
+      });
+      // Detail view: the icon takes most of the height, the text gets the rest of the width
+      const stacked = innerWidth < 720;
+      const tileSize = stacked ? Math.min(w * 0.5, h * 0.42) : Math.min(h * 0.82, w * 0.36);
+      showcase.style.setProperty('--tile', Math.round(tileSize) + 'px');
+    }
+
+    // Overview: cards as big as the free space allows, wrapping into rows when there are many
+    function sizeCards(n) {
+      const { w, h } = box2;
+      let best = 0;
+      for (let cols = 1; cols <= n; cols++) {
+        const rows = Math.ceil(n / cols);
+        // per card: width c, gap 0.16c, label below ~0.3c
+        const byW = w / (cols + 0.16 * (cols - 1));
+        const byH = h / (rows * 1.3 + 0.16 * (rows - 1));
+        best = Math.max(best, Math.min(byW, byH));
+      }
+      // Round down with a little slack, so the row never ends up a few px too wide and wraps
+      overview.style.setProperty('--card', Math.floor(Math.min(best, 260) * 0.98) + 'px');
+    }
+
+    const esc = text => String(text ?? '').replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
+
+    // A pastel name from the JSON (peach, cream, apricot, blue) or any CSS colour
+    function colorOf(project) {
+      const named = /^[a-z]+$/.test(project.color || '');
+      return named
+        ? { cls: ` tile--${project.color}`, style: '' }
+        : { cls: '', style: ` style="background:${esc(project.color || 'var(--color-peach)')}"` };
+    }
+
+    function tile(project, icon, extra = '') {
+      const c = colorOf(project);
+      return `<span class="tile${c.cls}${extra}"${c.style}>${icon}</span>`;
+    }
+
+    // Buttons for a project: its own "links" list if it has one, otherwise "demo" and "code"
+    function linksOf(p) {
+      const list = Array.isArray(p.links) ? p.links : [
+        p.demo && { label: 'Try it ↗', url: p.demo },
+        p.code && { label: 'Code', url: p.code }
+      ].filter(Boolean);
+      return list.map(l => `<a class="hud-pill" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join('');
+    }
+
+    function fade(el, to) {
+      return new Promise(resolve => {
+        let o = parseFloat(el.style.opacity || 0);
+        el.style.pointerEvents = to ? 'auto' : 'none';
+        (function tick() {
+          o += (to - o) * (reduced ? 1 : 0.12);
+          if (Math.abs(to - o) < 0.003) o = to;
+          el.style.opacity = o.toFixed(3);
+          if (o === to) resolve(); else requestAnimationFrame(tick);
+        })();
+      });
+    }
+
+    // Visitor input during the showcase: Enter / Space / → or a click / tap that isn't on a link.
+    // Presses are counted, so none get lost while a project fades in or out.
+    const advanceInput = { queued: 0, resolve: null };
+
+    function onAdvance() {
+      if (advanceInput.resolve) { advanceInput.resolve(); advanceInput.resolve = null; }
+      else advanceInput.queued++;
+    }
+    const onAdvanceKey = e => { if (['Enter', ' ', 'ArrowRight'].includes(e.key)) onAdvance(); };
+    const onAdvanceClick = e => { if (!e.target.closest('a')) onAdvance(); };
+
+    function listenForNext(on) {
+      const fn = on ? addEventListener : removeEventListener;
+      fn('keydown', onAdvanceKey);
+      fn('click', onAdvanceClick);
+      advanceInput.queued = 0;
+    }
+
+    function waitForNext() {
+      return new Promise(resolve => {
+        if (advanceInput.queued > 0) { advanceInput.queued--; resolve(); }
+        else advanceInput.resolve = resolve;
+      });
+    }
+
+    // "click for next" sits on the HUD's line, centred between the left edge and the GitHub button
+    const nextHint = document.getElementById('next-hint');
+    const nextWhat = document.getElementById('next-what');
+
+    function placeNextHint() {
+      const r = hud.getBoundingClientRect();
+      nextHint.style.width = r.left + 'px';
+      nextHint.style.top = r.top + 'px';
+      nextHint.style.height = r.height + 'px';
+    }
+
+    addEventListener('resize', () => { if (nextHint.style.width) placeNextHint(); });
+
+    // ---------- Project sheet (touch devices) ----------
+    const sheet = document.getElementById('sheet');
+    const sheetBackdrop = document.getElementById('sheet-backdrop');
+
+    function openSheet(p, icon) {
+      sheet.innerHTML = `
+        <button class="hud-pill sheet-close" type="button" aria-label="Close">close ✕</button>
+        <div class="sheet-head">${tile(p, icon)}<h2>${esc(p.name)}</h2></div>
+        <p class="label">${esc(p.description)}</p>
+        <div class="spotlight-links">${linksOf(p)}</div>`;
+      sheet.querySelector('.sheet-close').addEventListener('click', closeSheet);
+      fade(sheetBackdrop, 1);
+      fade(sheet, 1);
+    }
+
+    function closeSheet() {
+      fade(sheetBackdrop, 0);
+      fade(sheet, 0);
+    }
+
+    sheetBackdrop.addEventListener('click', closeSheet);
+    addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+
+    async function runShowcase() {
+      let projects = [];
+      try {
+        projects = (await (await fetch('projects.json')).json()).projects || [];
+      } catch { /* no projects file: nothing to show */ }
+      const icons = await Promise.all(projects.map(p =>
+        fetch(p.icon).then(r => (r.ok ? r.text() : '')).catch(() => '')));
+
+      // One project at a time: big icon, name, description, links; the visitor clicks on
+      if (!reduced) {
+        listenForNext(true);
+        for (const [i, p] of projects.entries()) {
+          const last = i === projects.length - 1;
+          const next = last ? 'see all' : 'next';
+          spotlight.innerHTML = `${tile(p, icons[i])}
+            <div class="spotlight-text">
+              <p class="label">${String(i + 1).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}</p>
+              <h2>${esc(p.name)}</h2>
+              <p class="label">${esc(p.description)}</p>
+              <div class="spotlight-links">${linksOf(p)}</div>
+            </div>`;
+          nextWhat.textContent = next;
+          if (i === 0) { placeNextHint(); fade(nextHint, 1); }
+          // Listen from the start, so a key pressed while it fades in still counts
+          const advance = waitForNext();
+          await fade(spotlight, 1);
+          await advance;
+          if (last) fade(nextHint, 0);
+          await fade(spotlight, 0);
+        }
+        listenForNext(false);
+      }
+
+      // At the end: one card per project; hover flips it to show the links (a tap opens the sheet)
+      sizeCards(projects.length);
+      overview.innerHTML = projects.map((p, i) => `
+        <div class="card" tabindex="0">
+          <div class="card-inner">
+            ${tile(p, icons[i], ' card-face')}
+            <div class="card-face card-back tile${colorOf(p).cls}"${colorOf(p).style}>${linksOf(p)}</div>
+          </div>
+          <p class="label">${esc(p.name)}</p>
+        </div>`).join('');
+      overview.querySelectorAll('.card').forEach((card, i) => {
+        card.addEventListener('click', e => {
+          if (e.target.closest('a')) return;
+          // Touch: the cards are too small to flip readably, so open the sheet instead
+          if (matchMedia('(hover: none)').matches) openSheet(projects[i], icons[i]);
+          else card.classList.toggle('is-flipped');
+        });
+      });
+      await fade(overview, 1);
+
+      // Finally: step back so the whole dashboard is in view
+      await new Promise(r => setTimeout(r, reduced ? 0 : 1200));
+      await zoomToFit([bigTitle, terminal, peek, ...overview.querySelectorAll('.card')]);
+
+      // And a little reward for whoever stays: the terminal types "korbi --play" and kicks off
+      setTimeout(playKickabout, reduced ? 0 : KICK.delay);
+    }
+
+    // ---------- ASCII kick-about in the terminal ----------
+    // A small cartoon (two players and a ball on a dark pitch) is drawn off-screen and turned,
+    // frame by frame, into characters on a canvas over the terminal's body. Monochrome, so the
+    // shapes read clearly: dark = blank, bright = dense glyphs.
+    const KICK = {
+      fps: 15,
+      delay: 10000,                     // ms after the final zoom-out before the command is typed
+      pass: 2.6,                        // seconds for one pass from one player to the other
+      ramp: ' .:-=+*o#%@',              // dark -> bright
+      fontSize: 8,
+      danceFontSize: 6,                 // phones: finer characters for the single dancer
+      scale: 1.55                       // player size in the scene
+    };
+
+    // Light tones on a black pitch, with enough contrast between parts to stay apart as characters
+    const LOOKS = {
+      korbi: { skin: '#E8C3A8', hair: '#8A6458', shirt: '#FFFFFF', shorts: '#9C9CA6', shoe: '#FFFFFF', cap: null },
+      buddy: { skin: '#E8C3A8', hair: '#6E5A55', shirt: '#C8C8C8', shorts: '#7E7E88', shoe: '#FFFFFF', cap: '#B4B4BE' }
+    };
+
+    const smooth = t => t * t * (3 - 2 * t);
+    const clamp01 = t => Math.min(1, Math.max(0, t));
+    const span = (u, a, b) => clamp01((u - a) / (b - a));   // 0..1 progress of u through [a, b]
+
+    // Black pitch with a faint floor and a touchline, nothing busy behind the players
+    function drawPitch(g, w, h, ground) {
+      g.fillStyle = '#000000';
+      g.fillRect(0, 0, w, h);
+      g.fillStyle = '#262626';
+      g.fillRect(0, ground + 2, w, h - ground);
+      g.fillStyle = '#5A5A5A';
+      g.fillRect(0, ground + 2, w, 1.5);
+    }
+
+    // One player. pose: leg / plant / arm angles in degrees (0 = straight down), bob in px
+    function drawPlayer(g, x, ground, facing, look, pose) {
+      g.save();
+      g.translate(x, ground - pose.bob);
+      const size = pose.scale || KICK.scale;
+      g.scale(facing * size, size);   // facing 1 = right, -1 = left
+
+      const limb = (px, py, angle, len, width, color) => {
+        g.save();
+        g.translate(px, py);
+        g.rotate(-angle * Math.PI / 180);   // positive angle swings the limb forward
+        g.fillStyle = color;
+        g.beginPath();
+        g.roundRect(-width / 2, 0, width, len, width / 2);
+        g.fill();
+        g.restore();
+        return [px + Math.sin(angle * Math.PI / 180) * len, py + Math.cos(angle * Math.PI / 180) * len];
+      };
+
+      // Shadow
+      g.fillStyle = 'rgba(150, 150, 150, .45)';
+      g.beginPath();
+      g.ellipse(0, pose.bob + 1, 16, 3, 0, 0, Math.PI * 2);
+      g.fill();
+
+      // Back arm, legs, shoes
+      limb(-5, -40, pose.armBack ?? -pose.arm, 15 * (pose.reach || 1), 5 * (pose.limb || 1), look.skin);
+      const plantFoot = limb(-4, -20, pose.plant, 18, 7, look.shorts);
+      const kickFoot = limb(4, -20, pose.leg, 18, 7, look.shorts);
+      g.fillStyle = look.shoe;
+      for (const [fx, fy] of [plantFoot, kickFoot]) {
+        g.beginPath();
+        g.ellipse(fx + 3, fy, 6, 3.2, 0, 0, Math.PI * 2);
+        g.fill();
+      }
+
+      // Shorts, shirt
+      g.fillStyle = look.shorts;
+      g.beginPath();
+      g.roundRect(-9, -27, 18, 9, 3);
+      g.fill();
+      g.fillStyle = look.shirt;
+      g.beginPath();
+      g.roundRect(-11, -46, 22, 22, 6);
+      g.fill();
+
+      // Front arm
+      limb(5, -40, pose.arm, 15 * (pose.reach || 1), 5 * (pose.limb || 1), look.skin);
+
+      // Head
+      g.fillStyle = look.skin;
+      g.beginPath();
+      g.arc(1, -58, 12, 0, Math.PI * 2);
+      g.fill();
+      if (look.cap) {
+        g.fillStyle = look.cap;
+        g.beginPath();
+        g.arc(1, -60, 12.5, Math.PI, 0);
+        g.fill();
+        g.fillRect(6, -61, 11, 3.5);   // brim
+      } else {
+        g.fillStyle = look.hair;
+        g.beginPath();
+        g.moveTo(-12, -58);
+        for (let i = 0; i <= 8; i++) {   // spiky, messy top
+          const a = Math.PI + (i / 8) * Math.PI;
+          const r = i % 2 ? 16 : 12.5;
+          g.lineTo(1 + Math.cos(a) * r, -60 + Math.sin(a) * r);
+        }
+        g.lineTo(13, -58);
+        g.closePath();
+        g.fill();
+      }
+
+      // Face (looking ahead)
+      g.fillStyle = '#20161A';
+      g.beginPath();
+      g.arc(5, -57, 1.6, 0, Math.PI * 2);
+      g.arc(10, -57, 1.6, 0, Math.PI * 2);
+      g.fill();
+      g.strokeStyle = '#20161A';
+      g.lineWidth = 1.4;
+      g.beginPath();
+      g.arc(7, -52, 3.5, 0.15 * Math.PI, 0.85 * Math.PI);
+      g.stroke();
+      g.fillStyle = 'rgba(232, 102, 76, .7)';
+      g.beginPath();
+      g.arc(-1, -53, 2, 0, Math.PI * 2);
+      g.fill();
+
+      g.restore();
+    }
+
+    function drawBall(g, x, y, ground, height, spin) {
+      // Shadow shrinks as the ball rises
+      const s = 1 / (1 + height / 40);
+      g.fillStyle = `rgba(150, 150, 150, ${(0.5 * s).toFixed(3)})`;   // a light shadow shows on the dark floor
+      g.beginPath();
+      g.ellipse(x, ground + 1, 10 * s, 2.5 * s, 0, 0, Math.PI * 2);
+      g.fill();
+
+      g.save();
+      g.translate(x, y);
+      g.rotate(spin);
+      g.fillStyle = '#FFFFFF';
+      g.beginPath();
+      g.arc(0, 0, 9, 0, Math.PI * 2);
+      g.fill();
+      g.fillStyle = '#3A3A3A';
+      for (let i = 0; i < 5; i++) {
+        const a = (i / 5) * Math.PI * 2;
+        g.beginPath();
+        g.arc(Math.cos(a) * 5.4, Math.sin(a) * 5.4, 2.2, 0, Math.PI * 2);
+        g.fill();
+      }
+      g.beginPath();
+      g.arc(0, 0, 2.6, 0, Math.PI * 2);
+      g.fill();
+      g.restore();
+    }
+
+    // The whole scene at time t (seconds), in logical units w × h
+    function drawKickabout(g, w, h, t) {
+      const ground = h * 0.84;
+      drawPitch(g, w, h, ground);
+
+      const left = { x: w * 0.2, foot: w * 0.2 + 12 * KICK.scale };
+      const right = { x: w * 0.8, foot: w * 0.8 - 12 * KICK.scale };
+      const passIndex = Math.floor(t / KICK.pass);
+      const u = (t % KICK.pass) / KICK.pass;
+      const fromLeft = passIndex % 2 === 0;
+
+      // Kicker: wind up, strike, recover.  Receiver: step in and trap the ball.
+      const kickLeg = u < 0.18 ? -55 * smooth(span(u, 0, 0.18))
+        : u < 0.26 ? -55 + 125 * smooth(span(u, 0.18, 0.26))
+        : 70 * (1 - smooth(span(u, 0.26, 0.48)));
+      const trapLeg = 28 * Math.sin(Math.PI * span(u, 0.66, 0.9));
+      const kicker = { leg: kickLeg, plant: -6, arm: -kickLeg * 0.45, bob: Math.abs(Math.sin(t * 5)) * 1.2 };
+      const receiver = { leg: trapLeg, plant: -4, arm: 10 + trapLeg * 0.3, bob: Math.abs(Math.sin(t * 5 + 1.3)) * 1.2 };
+
+      // Ball: leaves the kicker's foot, big arc, one small bounce, rolls into the receiver's foot
+      const start = fromLeft ? left.foot : right.foot;
+      const end = fromLeft ? right.foot : left.foot;
+      let bx, lift;
+      if (u < 0.22) {
+        bx = start; lift = 0;
+      } else if (u < 0.66) {
+        const p = span(u, 0.22, 0.66);
+        bx = start + (end - start) * 0.82 * p;
+        lift = h * 0.42 * 4 * p * (1 - p);
+      } else if (u < 0.8) {
+        const p = span(u, 0.66, 0.8);
+        bx = start + (end - start) * (0.82 + 0.18 * p);
+        lift = 12 * 4 * p * (1 - p);
+      } else {
+        bx = end; lift = 0;
+      }
+      const spin = (bx / 6) * (fromLeft ? 1 : -1);
+
+      drawPlayer(g, left.x, ground, 1, LOOKS.korbi, fromLeft ? kicker : receiver);
+      drawPlayer(g, right.x, ground, -1, LOOKS.buddy, fromLeft ? receiver : kicker);
+      drawBall(g, bx, ground - 9 - lift, ground, lift, spin);
+    }
+
+    // Phones: the terminal ends up tiny, so one big Korbi dances instead of the two-player kick-about
+    function drawDance(g, w, h, t) {
+      const ground = h * 0.88;
+      drawPitch(g, w, h, ground);
+      const beat = t * 2.2;                                   // beats per second
+      const pulse = Math.abs(Math.sin(beat * Math.PI));       // 0..1 on every beat
+      const step = Math.sin(beat * Math.PI);                  // -1..1, left / right step
+      const facing = Math.sin(beat * Math.PI / 4) >= 0 ? 1 : -1;   // turns every few beats
+      const size = Math.min(3.2, (h * 0.62) / 75);
+      const swap = (Math.sin(beat * Math.PI / 2) + 1) / 2;    // 0..1, which arm points up
+      drawPlayer(g, w / 2 + step * w * 0.04, ground, facing, LOOKS.korbi, {
+        scale: size,
+        arm: 70 + 65 * swap,                  // front arm: out -> up at an angle (straight up hides behind the head)
+        armBack: -(135 - 65 * swap),          // back arm: the opposite, so one is always up
+        reach: 1.25,                          // longer, thicker arms read better as characters
+        limb: 1.5,
+        leg: 28 * step,
+        plant: -28 * step,
+        bob: pulse * 4
+      });
+    }
+
+    // Canvas over the terminal's body that shows the scene as characters
+    function startKickabout(draw = drawKickabout) {
+      const fontSize = draw === drawDance ? KICK.danceFontSize : KICK.fontSize;
+      const stage = document.createElement('canvas');
+      stage.className = 'ascii-stage';
+      stage.setAttribute('role', 'img');
+      stage.setAttribute('aria-label', draw === drawDance
+        ? 'Korbi dancing, drawn in characters'
+        : 'Two cartoon players kicking a ball back and forth, drawn in characters');
+      terminal.appendChild(stage);
+      stage.style.top = terminal.querySelector('.terminal-bar').offsetHeight + 'px';
+
+      const cssW = term.offsetWidth, cssH = term.offsetHeight;   // unscaled CSS px, whatever the camera does
+      stage.style.width = cssW + 'px';
+      stage.style.height = cssH + 'px';
+      const dpr = Math.min(2, devicePixelRatio || 1);
+      stage.width = Math.round(cssW * dpr);
+      stage.height = Math.round(cssH * dpr);
+      const out = stage.getContext('2d');
+      out.scale(dpr, dpr);
+      out.font = `500 ${fontSize}px "JetBrains Mono", monospace`;
+      out.textBaseline = 'top';
+      const cw = out.measureText('M').width;
+      const ch = fontSize * 1.15;
+      const cols = Math.floor(cssW / cw), rows = Math.floor(cssH / ch);
+      const offX = (cssW - cols * cw) / 2, offY = (cssH - rows * ch) / 2;
+
+      // Off-screen source: one pixel per character cell, scene stretched to the cells' aspect
+      const src = document.createElement('canvas');
+      src.width = cols;
+      src.height = rows;
+      const sg = src.getContext('2d', { willReadFrequently: true });
+      const LW = 320, LH = LW * cssH / cssW;
+
+      function frame(t) {
+        sg.setTransform(cols / LW, 0, 0, rows / LH, 0, 0);
+        draw(sg, LW, LH, t);
+        const px = sg.getImageData(0, 0, cols, rows).data;
+
+        out.fillStyle = '#0E0D0C';
+        out.fillRect(0, 0, cssW, cssH);
+        // Monochrome: the glyph carries the brightness; a few grey levels add a little depth
+        const levels = ['#5E5A54', '#9C978E', '#D8D4CC', '#F6F3EE'];
+        const groups = levels.map(() => []);
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const i = (r * cols + c) * 4;
+            const lum = (0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2]) / 256;
+            const glyph = KICK.ramp[Math.min(KICK.ramp.length - 1, (lum * KICK.ramp.length) | 0)];
+            if (glyph === ' ') continue;
+            groups[Math.min(levels.length - 1, (lum * levels.length) | 0)].push(c, r, glyph);
+          }
+        }
+        groups.forEach((cells, level) => {
+          out.fillStyle = levels[level];
+          for (let k = 0; k < cells.length; k += 3) {
+            out.fillText(cells[k + 2], offX + cells[k] * cw, offY + cells[k + 1] * ch);
+          }
+        });
+      }
+
+      fade(stage, 1);
+      if (reduced) { frame(KICK.pass * 0.45); return; }
+
+      const start = performance.now();
+      let last = 0;
+      let alive = true;
+      (function loop(now) {
+        if (!alive) return;
+        if (now - last >= 1000 / KICK.fps) {
+          last = now;
+          frame((now - start) / 1000);
+        }
+        requestAnimationFrame(loop);
+      })(start);
+
+      let resizeTimer;
+      addEventListener('resize', function onResize() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          alive = false;
+          removeEventListener('resize', onResize);
+          stage.remove();
+          startKickabout(draw);
+        }, 200);
+      });
+    }
+
+    // At the very end: type the command into the last prompt, then kick off
+    async function playKickabout() {
+      const sleep = ms => new Promise(r => setTimeout(r, ms));
+      const prompt = cursor.parentElement;
+      const typed = document.createTextNode('');
+      prompt.insertBefore(typed, cursor);
+      const dance = innerWidth < 720;
+      for (const ch of dance ? 'korbi --dance' : 'korbi --play') {
+        typed.data += ch;
+        await sleep(reduced ? 0 : 70 + Math.random() * 50);
+      }
+      await sleep(reduced ? 0 : 450);
+      line(`<span class="t-dim">${dance ? 'music on …' : 'kick-off …'}</span>`);
+      await sleep(reduced ? 0 : 600);
+      await document.fonts.load(`500 ${KICK.fontSize}px "JetBrains Mono"`);
+      startKickabout(dance ? drawDance : drawKickabout);
+    }
+
+    // Screen point -> world point for the camera as it is right now
+    function screenToWorld(x, y) {
+      const dx = (x - cam.px) / cam.s, dy = (y - cam.py) / cam.s;
+      const c = Math.cos(-cam.a), s = Math.sin(-cam.a);
+      return [cam.cx + dx * c - dy * s, cam.cy + dx * s + dy * c];
+    }
+
+    // Fly so all the given elements fit on screen, above the HUD, with a margin
+    function zoomToFit(elements) {
+      const W = innerWidth, H = innerHeight;
+      const margin = space('--space-5');
+      const usableH = H - (hud.offsetHeight + space('--space-4'));
+      const rects = elements.map(el => el.getBoundingClientRect());
+      const u = {
+        left: Math.min(...rects.map(r => r.left)),
+        top: Math.min(...rects.map(r => r.top)),
+        right: Math.max(...rects.map(r => r.right)),
+        bottom: Math.max(...rects.map(r => r.bottom))
+      };
+      const fit = Math.min((W - 2 * margin) / (u.right - u.left), (usableH - 2 * margin) / (u.bottom - u.top), 1);
+
+      // Re-pivot on the middle of everything, then move it to the middle of the screen
+      const ux = (u.left + u.right) / 2, uy = (u.top + u.bottom) / 2;
+      [cam.cx, cam.cy] = screenToWorld(ux, uy);
+      cam.px = ux;
+      cam.py = uy;
+      return flyTo(W / 2, usableH / 2, cam.s * fit);
+    }
+
+    // Write the camera to the world, the grid and the zoom readout
+    function applyCamera() {
+      world.style.transform =
+        `translate(${cam.px.toFixed(2)}px, ${cam.py.toFixed(2)}px) rotate(${cam.a.toFixed(5)}rad) ` +
+        `scale(${cam.s.toFixed(4)}) translate(${-cam.cx}px, ${-cam.cy}px)`;
+
+      // Grid: same move and zoom as the camera, without the turn. Below ~70 % the coarse grid
+      // (one cell per 2×2 fine cells) takes over, so cells never get tiny.
+      const ox = cam.px - cam.cx * cam.s - 1, oy = cam.py - cam.cy * cam.s - 1;
+      [[gridFine, GRID], [gridCoarse, GRID * 2]].forEach(([el, size]) => {
+        const px = size * cam.s;
+        el.style.backgroundSize = `${px.toFixed(2)}px ${px.toFixed(2)}px`;
+        el.style.backgroundPosition = `${(ox % px).toFixed(2)}px ${(oy % px).toFixed(2)}px`;
+      });
+      const coarse = Math.min(1, Math.max(0, (1 - cam.s) / 0.3));
+      gridFine.style.opacity = (1 - coarse).toFixed(3);
+      gridCoarse.style.opacity = coarse.toFixed(3);
+
+      zoomPill.textContent = Math.round(cam.s * 100) + '%';
+    }
+
+    function finishNow() {
+      skipping = true;
+      state.liftTarget = 1;
+      state.waveTarget = 1;
+    }
+
+    (async () => {
+      const [lean, wave] = await Promise.all([cutOut(SOURCES.lean), cutOut(SOURCES.wave)]);
+      poses.lean.src = lean;
+      poses.wave.src = wave;
+      layout();
+      requestAnimationFrame(render);
+
+      if (reduced) {
+        finishNow();
+        skipHint.remove();
+        await story();
+        return;
+      }
+
+      addEventListener('keydown', finishNow, { once: true });
+      addEventListener('click', finishNow);
+      await story();
+    })();
+
+    addEventListener('resize', () => { if (poses.lean.src && !zoomed) layout(); });
+  })();
+</script>
+</body>
+</html>

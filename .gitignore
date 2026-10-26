@@ -1,0 +1,5 @@
+# Source material, not part of the site
+reference/
+
+# Local tooling
+.claude/

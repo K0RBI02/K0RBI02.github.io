@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- crafting grid -->
+  <path d="M10 22 C 25 21, 41 21, 56 22 C 57 37, 57 53, 56 68 C 41 69, 25 69, 10 68 C 9 53, 9 37, 10 22 Z"/>
+  <path d="M25 22 C 25 37, 25 53, 25 68 M 41 22 C 41 37, 41 53, 41 68"/>
+  <path d="M10 37 C 25 37, 41 37, 56 37 M 10 53 C 25 53, 41 53, 56 53"/>
+  <path d="M17 44 L 19 46 M 33 29 L 35 31 M 47 60 L 49 62"/>
+  <!-- arrow to the result -->
+  <path d="M62 45 C 67 45, 71 45, 75 45 M 70 40 L 75 45 L 70 50"/>
+  <!-- result slot with a pickaxe -->
+  <path d="M79 33 C 84 33, 89 33, 93 33 C 94 41, 94 49, 93 57 C 89 58, 84 58, 79 57 C 78 49, 78 41, 79 33 Z"/>
+  <path d="M82 38 C 85 36, 89 37, 91 40 M 86 38 L 86 53"/>
+  <!-- checklist below -->
+  <path d="M14 80 L 18 84 L 24 76"/>
+  <path d="M30 80 C 42 79, 54 80, 66 79"/>
+</svg>
