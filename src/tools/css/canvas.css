@@ -44,17 +44,22 @@ body { overscroll-behavior: none; }
 }
 .big-title > span { display: block; }
 
-/* Korbi sits on the D of "Drop it.", knees up, feet against its front; he scales, turns and fades with
-   the headline. Where he sits is 65 % down the image, set on the D's top edge, which in Instrument Sans
-   Bold lies 0.25em below the top of the line box. The figure's middle is 56 % across the image. */
+/* Korbi sits on the D of "Drop it.", knees up, right at its left edge with half his seat over the drop;
+   he scales, turns and fades with the headline. Where he sits is 65 % down and 74 % across the image.
+   In Instrument Sans Bold the D's top edge lies 0.25em below the top of the line box, its left edge 0.04em in. */
 .seat { position: relative; }
 .korbi-seat {
   position: absolute;
-  left: 50%;
+  left: 0.04em;
   top: calc(0.25em - 0.65 * 0.95em);
   height: 0.95em;
   width: auto;
-  transform: translateX(-56%);
+  transform: translateX(-74%);
+}
+/* Narrow layout (below 760 px, see computeLayout): the headline starts at the screen's edge, so there is
+   no room for the drop; he sits on top of the D */
+@media (max-width: 759px) {
+  .korbi-seat { left: 50%; transform: translateX(-56%); }
 }
 .underline { position: relative; }
 .underline svg {
