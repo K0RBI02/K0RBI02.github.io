@@ -587,7 +587,11 @@
     .terminal-body { font-size: 12.5px; padding: 16px; }
     .terminal-bar span { padding-right: 40px; }
   }
+
+  /* /#projects: stay hidden while the tour runs through at once, then fade in on the dashboard */
+  .jump body { opacity: 0; }
 </style>
+<script>if (location.hash === '#projects') document.documentElement.classList.add('jump');</script>
 </head>
 <body>
   <div class="grid" id="grid-fine"></div>
@@ -640,6 +644,9 @@
 <script>
   (() => {
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // A link to /#projects skips the whole tour and lands on the finished dashboard
+    const jump = location.hash === '#projects';
+    let instant = reduced || jump;   // the tour's moves and fades happen at once
     const terminal = document.getElementById('terminal');
     const term = document.getElementById('term');
     const skipHint = document.getElementById('skip');
@@ -906,6 +913,8 @@
       const onKey = e => { if (e.key === 'Enter') more(); };
       addEventListener('keydown', onKey);
       terminal.addEventListener('click', more);
+      // Jumping: go on by itself once the fonts are in and Korbi has been drawn at the edge (the zoom measures both)
+      if (jump) document.fonts.ready.then(() => requestAnimationFrame(() => requestAnimationFrame(more)));
       function more() {
         removeEventListener('keydown', onKey);
         terminal.removeEventListener('click', more);
@@ -990,7 +999,7 @@
 
       (function tick(now) {
         // Camera: lerp toward the target, zoom in log space so it feels even; the turn follows the zoom
-        const k = reduced ? 1 : 0.055;
+        const k = instant ? 1 : 0.055;
         const ls = Math.log(cam.s) + (Math.log(S) - Math.log(cam.s)) * k;
         cam.s = Math.exp(ls);
         cam.px += (PX - cam.px) * k;
@@ -1004,10 +1013,10 @@
         applyCamera();
 
         // Headline fades in late in the zoom; the selection frame shows briefly, like after a paste
-        const fk = reduced ? 1 : 0.08;
+        const fk = instant ? 1 : 0.08;
         fade.hud += (1 - fade.hud) * fk;
         if (progress > 0.75) fade.title += (1 - fade.title) * fk;
-        const selTarget = progress > 0.85 && t < 1500 ? 1 : 0;
+        const selTarget = !instant && progress > 0.85 && t < 1500 ? 1 : 0;
         fade.sel += (selTarget - fade.sel) * fk;
 
         bigTitle.style.opacity = fade.title.toFixed(3);
@@ -1018,9 +1027,9 @@
         siteFooter.style.visibility = 'visible';
         siteFooter.style.height = hud.offsetHeight + 'px';   // same row height as the pills, so the text lines up
 
-        const settled = Math.abs(cam.s - S) < 0.0005 && 1 - fade.title < 0.002 && fade.sel < 0.002 && t > 1500;
+        const settled = Math.abs(cam.s - S) < 0.0005 && 1 - fade.title < 0.002 && fade.sel < 0.002 && (instant || t > 1500);
         if (!settled) requestAnimationFrame(tick);
-        else setTimeout(focusFreeSpace, reduced ? 0 : 900);   // short hold, then move on
+        else setTimeout(focusFreeSpace, instant ? 0 : 900);   // short hold, then move on
       })(start);
 
       // Next stop: the empty bottom-left of the dashboard, between the headline, the window and the HUD
@@ -1069,7 +1078,7 @@
     function flyTo(px, py, s) {
       return new Promise(resolve => {
         (function tick() {
-          const k = reduced ? 1 : 0.05;
+          const k = instant ? 1 : 0.05;
           cam.s = Math.exp(Math.log(cam.s) + (Math.log(s) - Math.log(cam.s)) * k);
           cam.px += (px - cam.px) * k;
           cam.py += (py - cam.py) * k;
@@ -1149,7 +1158,7 @@
         let o = parseFloat(el.style.opacity || 0);
         el.style.pointerEvents = to ? 'auto' : 'none';
         (function tick() {
-          o += (to - o) * (reduced ? 1 : 0.12);
+          o += (to - o) * (instant ? 1 : 0.12);
           if (Math.abs(to - o) < 0.003) o = to;
           el.style.opacity = o.toFixed(3);
           if (o === to) resolve(); else requestAnimationFrame(tick);
@@ -1228,9 +1237,15 @@
     const projectsReady = fetch('projects.json')
       .then(r => r.json()).then(j => j.projects || [])
       .catch(() => []);   // no projects file: nothing to show
-    const posesReady = projectsReady.then(async projects => {
+    // ...but only after the intro's own two poses are ready, so the intro never waits on them
+    let peekDone;
+    const peekReady = new Promise(resolve => { peekDone = resolve; });
+    const posesReady = Promise.all([projectsReady, peekReady]).then(async ([projects]) => {
       const out = [];
-      for (const p of projects) out.push(p.korbi ? await cutOutPose(p.korbi).catch(() => null) : null);
+      for (const p of projects) {
+        await new Promise(r => setTimeout(r, 50));   // a breath between cuts, so typing stays smooth
+        out.push(p.korbi ? await cutOutPose(p.korbi).catch(() => null) : null);
+      }
       return out;
     });
 
@@ -1238,10 +1253,9 @@
       const projects = await projectsReady;
       const icons = await Promise.all(projects.map(p =>
         fetch(p.icon).then(r => (r.ok ? r.text() : '')).catch(() => '')));
-      const poses = await posesReady;
-
       // One project at a time: big icon, name, description, links; the visitor clicks on
-      if (!reduced) {
+      if (!instant) {
+        const poses = await posesReady;
         listenForNext(true);
         for (const [i, p] of projects.entries()) {
           const last = i === projects.length - 1;
@@ -1286,8 +1300,10 @@
       await fade(overview, 1);
 
       // Finally: step back so the whole dashboard is in view
-      await new Promise(r => setTimeout(r, reduced ? 0 : 1200));
+      await new Promise(r => setTimeout(r, instant ? 0 : 1200));
       await zoomToFit([bigTitle, terminal, peek, ...overview.querySelectorAll('.card')]);
+      instant = reduced;   // from here on (card flips, the sheet) things move normally again
+      if (jump) fade(document.body, 1);
 
       // And a little reward for whoever stays: the terminal types "korbi --play" and kicks off
       setTimeout(playKickabout, reduced ? 0 : KICK.delay);
@@ -1679,10 +1695,11 @@
       const [lean, wave] = await Promise.all([cutOut(SOURCES.lean), cutOut(SOURCES.wave)]);
       poses.lean.src = lean.toDataURL('image/png');
       poses.wave.src = wave.toDataURL('image/png');
+      peekDone();
       layout();
       requestAnimationFrame(render);
 
-      if (reduced) {
+      if (instant) {
         finishNow();
         skipHint.remove();
         await story();
