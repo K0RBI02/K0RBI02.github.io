@@ -1,5 +1,5 @@
-// More image tools: iPhone photos and reading text from pictures.
-// The libraries download once (a few MB) and then run on this device.
+// More image tools: iPhone photos, reading text from pictures, removing backgrounds.
+// The libraries download once (a few MB, the background model more) and then run on this device.
 
 const HEIC_ACCEPT = '.heic,.heif,image/heic,image/heif';
 const isHeic = (f) => /\.(heic|heif)$/i.test(f.name) || /image\/hei[cf]/.test(f.type);
@@ -159,5 +159,142 @@ tool({
     side.append(field('Language', lang), status, actions(save, copy));
     [save, copy].forEach((b) => (b.disabled = true));
     return () => { runId++; worker?.terminate(); };
+  },
+});
+
+// ---------- Remove background ----------
+// U²-Net-p (Apache-2.0, from github.com/xuebinqin/U-2-Net, as exported by rembg) through onnxruntime-web (MIT).
+// The model is small (4.4 MB) and ships with toKIT, and it runs on the processor in about a second,
+// so it works on any device. It finds the one main subject: a person, a product, a pet.
+
+const BG_MODEL = 'models/u2netp.onnx';
+const BG_SIZE = 320;   // the model looks at the photo at 320 × 320
+let bgSession = null;
+
+function loadBgModel() {
+  bgSession ||= (async () => {
+    const ort = await needModule('ort');
+    ort.env.wasm.wasmPaths = MODULES.ort.replace(/[^/]*$/, '');
+    return ort.InferenceSession.create(BG_MODEL, { executionProviders: ['wasm'] });
+  })().catch((err) => { bgSession = null; throw err; });
+  return bgSession;
+}
+
+// The photo with everything but the subject made transparent, as a PNG
+async function cutBackground(file) {
+  const [session, ort] = await Promise.all([loadBgModel(), needModule('ort')]);
+  const img = await loadImage(file);
+  const S = BG_SIZE;
+
+  // Input as rembg prepares it: squashed to 320 × 320, scaled by the brightest value, then normalised
+  const small = h('canvas', { width: S, height: S });
+  const sg = small.getContext('2d', { willReadFrequently: true });
+  sg.drawImage(img, 0, 0, S, S);
+  const px = sg.getImageData(0, 0, S, S).data;
+  let max = 1;
+  for (let i = 0; i < px.length; i += 4) max = Math.max(max, px[i], px[i + 1], px[i + 2]);
+  const mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225];
+  const input = new Float32Array(3 * S * S);
+  for (let p = 0; p < S * S; p++) {
+    for (let ch = 0; ch < 3; ch++) input[ch * S * S + p] = (px[p * 4 + ch] / max - mean[ch]) / std[ch];
+  }
+  const out = await session.run({ [session.inputNames[0]]: new ort.Tensor('float32', input, [1, 3, S, S]) });
+  const pred = out[session.outputNames[0]].data;
+
+  // The prediction, stretched to 0..255, becomes a mask...
+  let lo = Infinity, hi = -Infinity;
+  for (let i = 0; i < S * S; i++) { lo = Math.min(lo, pred[i]); hi = Math.max(hi, pred[i]); }
+  const mask = sg.createImageData(S, S);
+  for (let i = 0; i < S * S; i++) mask.data[i * 4 + 3] = Math.round(((pred[i] - lo) / (hi - lo || 1)) * 255);
+  sg.putImageData(mask, 0, 0);
+
+  // ...scaled up smoothly to the photo's size, and the photo is kept only where the mask is
+  const c = h('canvas', { width: img.naturalWidth, height: img.naturalHeight });
+  const g = c.getContext('2d');
+  g.imageSmoothingQuality = 'high';
+  g.drawImage(small, 0, 0, c.width, c.height);
+  g.globalCompositeOperation = 'source-in';
+  g.drawImage(img, 0, 0);
+  URL.revokeObjectURL(img.src);
+  return canvasToBlob(c, 'image/png');
+}
+
+tool({
+  id: 'remove-background',
+  cat: 'image',
+  name: 'Remove background',
+  desc: 'Cut out a person, a product or a pet from a photo.',
+  intro: 'A small AI model on your device finds the main subject and removes the rest. Works best with one clear subject.',
+  keywords: 'remove background cut out cutout transparent png product photo portrait pet ai erase',
+  mount(root) {
+    const { work, side } = layout(root);
+    let file = null, cut = null, cutUrl = null;
+    const before = h('img', { alt: 'Original' });
+    const after = h('img', { alt: 'Without background' });
+    const compare = h('div', { class: 'bg-compare', hidden: true }, h('figure', {}, before, h('figcaption', {}, 'Before')), h('figure', { class: 'is-cut' }, after, h('figcaption', {}, 'After')));
+    const status = h('p', { class: 'note' }, 'Add a photo to start.');
+    const BG = { none: null, white: '#ffffff', black: '#111110' };
+    const bg = segmented([['none', 'Transparent'], ['white', 'White'], ['black', 'Black'], ['custom', 'Colour']], 'none', paint, 'Background');
+    const custom = h('input', { type: 'color', value: '#FFE1CC', oninput: () => { bg.set('custom', true); } });
+    const zone = dropzone({
+      accept: 'image/jpeg,image/png,image/webp',
+      multiple: false,
+      title: 'Drop a photo here',
+      hint: 'JPG, PNG or WebP',
+      onFiles: async ([f]) => {
+        file = f;
+        cut = null;
+        if (before.src) URL.revokeObjectURL(before.src);
+        before.src = URL.createObjectURL(f);
+        after.removeAttribute('src');
+        compare.hidden = false;
+        compare.classList.add('is-working');
+        zone.compact(true, `${f.name}. Drop another to replace it.`);
+        status.textContent = 'Finding the subject…';
+        update();
+        try {
+          const result = await cutBackground(f);
+          if (file !== f) return;
+          cut = result;
+          status.textContent = 'Done. Pick a background, then save.';
+          await paint();
+        } catch (err) {
+          console.error(err);
+          if (file === f) status.textContent = 'This did not work. Check your connection, or try a smaller photo.';
+        } finally {
+          if (file === f) compare.classList.remove('is-working');
+          update();
+        }
+      },
+    });
+    // The cut-out on the chosen background
+    async function render() {
+      const img = await loadImage(cut);
+      const c = h('canvas', { width: img.naturalWidth, height: img.naturalHeight });
+      const g = c.getContext('2d');
+      const color = bg.value === 'custom' ? custom.value : BG[bg.value];
+      if (color) { g.fillStyle = color; g.fillRect(0, 0, c.width, c.height); }
+      g.drawImage(img, 0, 0);
+      URL.revokeObjectURL(img.src);
+      return canvasToBlob(c, color ? 'image/jpeg' : 'image/png', 0.92);
+    }
+    async function paint() {
+      if (!cut) return;
+      if (cutUrl) URL.revokeObjectURL(cutUrl);
+      cutUrl = URL.createObjectURL(await render());
+      after.src = cutUrl;
+    }
+    const go = button('Save image', () => busy(go, async () => {
+      const blob = await render();
+      downloadBlob(blob, `${baseName(file.name)}-cutout.${blob.type === 'image/png' ? 'png' : 'jpg'}`);
+    }), 'primary');
+    function update() { go.disabled = !cut; }
+    work.append(zone, compare);
+    side.append(status, field('Background', bg), field('Own colour', h('div', { class: 'row' }, custom, h('span', { class: 'note' }, 'Click to pick'))), actions(go));
+    update();
+    return () => {
+      if (before.src) URL.revokeObjectURL(before.src);
+      if (cutUrl) URL.revokeObjectURL(cutUrl);
+    };
   },
 });

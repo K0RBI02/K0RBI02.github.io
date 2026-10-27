@@ -175,6 +175,7 @@ const LIBS = {
 // ES modules, for libraries that only ship that way
 const MODULES = {
   gifenc: 'https://cdn.jsdelivr.net/npm/gifenc@1.0.3/+esm',
+  ort: 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.wasm.min.mjs',
 };
 const modules = {};
 function needModule(name) {
