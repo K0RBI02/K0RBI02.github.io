@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Korbi as a doodle on a pastel tile, same hand as the project icons; thick strokes so it reads at 16px -->
+  <rect width="64" height="64" rx="14" fill="#FFE1CC"/>
+  <g stroke="#111110" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- head -->
+    <path fill="none" d="M16 36 C 15 26, 22 22, 32 22 C 42 22, 49 27, 49 37 C 49 47, 41 54, 32 54 C 23 54, 16 47, 16 36 Z"/>
+    <!-- cap: crown in the accent colour, brim pointing to the left -->
+    <path fill="#FF8A4C" d="M17 31 C 16 19, 23 12, 33 12 C 43 12, 50 19, 50 31 Z"/>
+    <path fill="none" d="M22 31 C 14 31, 8 32, 5 35"/>
+    <path fill="none" d="M31 13 C 28 18, 27 24, 27 31"/>
+    <!-- smile -->
+    <path fill="none" d="M25 45 C 29 49, 35 49, 39 44"/>
+  </g>
+  <!-- eyes -->
+  <circle cx="26" cy="38" r="2.8" fill="#111110"/>
+  <circle cx="38" cy="38" r="2.8" fill="#111110"/>
+</svg>

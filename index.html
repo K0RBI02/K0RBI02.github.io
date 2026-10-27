@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Korbi</title>
 <meta name="description" content="Small things for the web, built by Korbi.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -226,6 +228,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    white-space: nowrap;
     opacity: 0;
     pointer-events: none;
   }
@@ -364,6 +367,26 @@
   @media (max-width: 720px) {
     .spotlight { flex-direction: column; align-items: flex-start; }
     .overview { justify-content: center; }   /* the window is above, not beside, on phones */
+  }
+
+  /* Bottom-left: a quiet copyright line on the HUD's row, same style as the "next" hint */
+  .site-footer {
+    position: fixed;
+    left: var(--gutter);
+    bottom: var(--gutter);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .footer-long { display: inline; }
+
+  @media (max-width: 720px) {
+    .footer-long { display: none; }   /* phones: just "© 2026 Korbi" */
   }
 
   /* Bottom-right corner, like Canva: GitHub link next to the zoom readout */
@@ -588,6 +611,8 @@
   <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Project details"></section>
 
   <p class="label next-hint" id="next-hint" aria-live="polite"><span><span class="next-key">click or press enter</span><span class="next-tap">tap</span> for <span id="next-what">next</span> →</span></p>
+
+  <p class="label site-footer" id="site-footer"><span>© <span id="year">2026</span> Korbi<span class="footer-long"> · all rights reserved</span></span></p>
 
   <div class="hud" id="hud">
     <a class="hud-pill" href="https://github.com/K0RBI02" target="_blank" rel="noopener">
@@ -840,6 +865,8 @@
     const bigTitle = document.getElementById('big-title');
     const hud = document.getElementById('hud');
     const zoomPill = document.getElementById('zoom-pill');
+    const siteFooter = document.getElementById('site-footer');
+    document.getElementById('year').textContent = new Date().getFullYear();   // stays current on its own
     const cam = { s: 1, a: 0, px: 0, py: 0, cx: 0, cy: 0 };
     const TILT = -5 * Math.PI / 180;   // the canvas ends up slightly askew
     const GRID = 32;                   // fine grid cell, px at 100 %
@@ -932,6 +959,9 @@
         bigTitle.style.setProperty('--sel', fade.sel.toFixed(3));
         hud.style.opacity = fade.hud.toFixed(3);
         hud.style.visibility = 'visible';
+        siteFooter.style.opacity = fade.hud.toFixed(3);
+        siteFooter.style.visibility = 'visible';
+        siteFooter.style.height = hud.offsetHeight + 'px';   // same row height as the pills, so the text lines up
 
         const settled = Math.abs(cam.s - S) < 0.0005 && 1 - fade.title < 0.002 && fade.sel < 0.002 && t > 1500;
         if (!settled) requestAnimationFrame(tick);
@@ -1100,10 +1130,16 @@
     const nextHint = document.getElementById('next-hint');
     const nextWhat = document.getElementById('next-what');
 
+    // ...now between the copyright line on the left and the GitHub button on the right;
+    // on phones that gap is too narrow, so it goes one row up across the full width
     function placeNextHint() {
       const r = hud.getBoundingClientRect();
-      nextHint.style.width = r.left + 'px';
-      nextHint.style.top = r.top + 'px';
+      const f = siteFooter.getBoundingClientRect();
+      const fits = nextHint.firstElementChild.offsetWidth + 2 * space('--space-3') <= r.left - f.right;
+      const left = fits ? f.right : f.left;
+      nextHint.style.left = left + 'px';
+      nextHint.style.width = ((fits ? r.left : r.right) - left) + 'px';
+      nextHint.style.top = (fits ? r.top : r.top - r.height - space('--space-2')) + 'px';
       nextHint.style.height = r.height + 'px';
     }
 
