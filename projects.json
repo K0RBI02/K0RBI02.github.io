@@ -1,12 +1,10 @@
 {
   "projects": [
     {
-      "name": "QR-Maker",
-      "description": "A minimal, modern QR code generator. Type, get a code, done.",
-      "icon": "icons/qr-maker.svg",
-      "color": "peach",
-      "demo": "https://k0rbi02.github.io/QR-Maker_/",
-      "code": "https://github.com/K0RBI02/QR-Maker_"
+      "name": "Toolbox",
+      "description": "The small tools you need now and then: PDF and image helpers, right in the browser. No ads, no sign-up, your files stay on your device.",
+      "icon": "icons/toolbox.svg",
+      "color": "peach"
     },
     {
       "name": "Daily Tracking",
