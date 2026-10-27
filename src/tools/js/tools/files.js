@@ -8,7 +8,7 @@ tool({
   name: 'Open a ZIP',
   desc: 'See what is in a ZIP file and take out what you need.',
   intro: 'Look inside without unpacking everything. Click a file to save just that one.',
-  keywords: 'zip unzip open extract archive entpacken files folder',
+  keywords: 'zip unzip open extract archive files folder',
   mount(root) {
     const { work, side } = layout(root);
     let zip = null, file = null, entries = [];
@@ -71,7 +71,7 @@ tool({
   name: 'Make a ZIP',
   desc: 'Pack several files into one ZIP to send them.',
   intro: 'Drop files, give the ZIP a name, done. Good for email and uploads that take only one file.',
-  keywords: 'zip create pack compress archive bundle files send email packen',
+  keywords: 'zip create pack compress archive bundle files send email',
   mount(root) {
     const { work, side } = layout(root);
     let files = [];

@@ -25,7 +25,7 @@ tool({
   name: 'Date calculator',
   desc: 'Days between two dates, or a date plus some days.',
   intro: 'How long until the holidays? What date is 90 days from now? Both work here.',
-  keywords: 'date days between calculator add subtract weeks months deadline countdown age tage datum rechner',
+  keywords: 'date days between calculator add subtract weeks months deadline countdown age',
   mount(root) {
     const { work, side } = layout(root);
     const today = isoDay(new Date());
@@ -90,7 +90,7 @@ tool({
   name: 'Percent calculator',
   desc: 'Percent of a number, what percent, and percent change.',
   intro: 'Three everyday percentage questions. Type in any box and the answer updates.',
-  keywords: 'percent percentage calculator discount increase decrease change rabatt prozent rechner tip vat mwst',
+  keywords: 'percent percentage calculator discount increase decrease change tip vat tax',
   mount(root) {
     const { work } = layout(root, { side: false });
     const num = (v) => h('input', { class: 'input is-big', inputmode: 'decimal', value: v });

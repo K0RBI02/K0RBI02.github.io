@@ -27,7 +27,7 @@ tool({
   name: 'QR codes',
   desc: 'Turn a link, Wi-Fi login or contact into a QR code.',
   intro: 'Type, see the code, save it as PNG or SVG. No tracking links, no expiry: the code holds your text directly.',
-  keywords: 'qr code generator link url wifi wlan contact vcard barcode',
+  keywords: 'qr code generator link url wifi contact vcard barcode',
   mount(root) {
     const { work, side } = layout(root);
     const preview = h('div', { class: 'code-preview' });
@@ -145,7 +145,7 @@ tool({
   name: 'Barcode generator',
   desc: 'EAN, UPC, Code 128 and more, as PNG or SVG.',
   intro: 'Type the number or text, pick the barcode type. Check digits are added for you.',
-  keywords: 'barcode ean ean13 upc code128 code39 itf strichcode generator product label',
+  keywords: 'barcode ean ean13 upc code128 code39 itf generator product label',
   mount(root) {
     const { work, side } = layout(root);
     const value = textInput({ value: '4006381333931', class: 'input is-code', oninput: () => draw() });

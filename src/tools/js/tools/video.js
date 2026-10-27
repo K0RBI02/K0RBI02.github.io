@@ -134,7 +134,7 @@ tool({
   name: 'Trim a video',
   desc: 'Cut the start and end off a video.',
   intro: 'Drag the orange handles. When you save, the clip plays once while it is recorded, so it takes as long as the clip.',
-  keywords: 'video trim cut shorten clip mp4 mov webm schneiden kürzen',
+  keywords: 'video trim cut shorten clip mp4 mov webm',
   mount(root) {
     let state;
     const info = h('p', { class: 'note' }, 'Add a video to start.');

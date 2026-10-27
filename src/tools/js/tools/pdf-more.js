@@ -328,7 +328,7 @@ tool({
   name: 'Add a watermark',
   desc: 'Stamp "DRAFT", "COPY" or your own text across every page.',
   intro: 'Type the text, pick how strong it should be, and it goes on every page.',
-  keywords: 'watermark stamp draft confidential copy entwurf kopie pdf',
+  keywords: 'watermark stamp draft confidential copy pdf',
   mount(root) {
     const { work, side } = layout(root);
     let src = null;
