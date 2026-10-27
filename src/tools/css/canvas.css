@@ -44,13 +44,14 @@ body { overscroll-behavior: none; }
 }
 .big-title > span { display: block; }
 
-/* Korbi sits on the D of "Drop it.", knees up, right at its left edge with half his seat over the drop;
+/* Korbi sits on the D of "Drop it.", knees up, on the flat stretch of its top, feet over the front left;
    he scales, turns and fades with the headline. Where he sits is 65 % down and 74 % across the image.
-   In Instrument Sans Bold the D's top edge lies 0.25em below the top of the line box, its left edge 0.04em in. */
+   In Instrument Sans Bold the D's top edge lies 0.25em below the top of the line box and is flat from
+   0.05em to about 0.41em, where the bowl starts; his seat goes in the middle of that, at 0.2em. */
 .seat { position: relative; }
 .korbi-seat {
   position: absolute;
-  left: 0.04em;
+  left: 0.2em;
   top: calc(0.25em - 0.65 * 0.95em);
   height: 0.95em;
   width: auto;
