@@ -44,17 +44,17 @@ body { overscroll-behavior: none; }
 }
 .big-title > span { display: block; }
 
-/* Korbi sits on the D of "Drop it.", legs over its front; he scales, turns and fades with the headline.
-   The pose's seat (where his hands hold the edge) is 58 % down the image, set on the D's top edge,
-   which in Instrument Sans Bold lies 0.25em below the top of the line box. */
+/* Korbi sits on the D of "Drop it.", knees up, feet against its front; he scales, turns and fades with
+   the headline. Where he sits is 65 % down the image, set on the D's top edge, which in Instrument Sans
+   Bold lies 0.25em below the top of the line box. The figure's middle is 56 % across the image. */
 .seat { position: relative; }
 .korbi-seat {
   position: absolute;
   left: 50%;
-  top: calc(0.25em - 0.58 * 1.05em);
-  height: 1.05em;
+  top: calc(0.25em - 0.65 * 0.95em);
+  height: 0.95em;
   width: auto;
-  transform: translateX(-50%);
+  transform: translateX(-56%);
 }
 .underline { position: relative; }
 .underline svg {
