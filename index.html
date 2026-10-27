@@ -495,7 +495,7 @@
   }
 
   .t-user, .t-bar, .t-name { color: var(--color-accent); }
-  .t-path, .t-dim, .t-venv { color: var(--term-dim); }
+  .t-path, .t-dim { color: var(--term-dim); }
   .t-bar-rest { color: #3A3734; }
   .t-name { font-weight: 500; }
 
@@ -759,7 +759,6 @@
     // ---------- Terminal helpers ----------
     const wait = ms => skipping ? Promise.resolve() : new Promise(r => setTimeout(r, ms));
     const prompt = '<span class="t-user">korbi@fedora</span>:<span class="t-path">~/portfolio</span>$ ';
-    const venvPrompt = '<span class="t-venv">(.venv)</span> ' + prompt;
     const cursor = document.createElement('span');
     cursor.className = 'cursor';
 
@@ -788,7 +787,7 @@
       for (let i = 1; i <= total; i++) {
         const kb = (42 * i / total).toFixed(1);
         bar.innerHTML = '   <span class="t-bar">' + '━'.repeat(i) + '</span><span class="t-bar-rest">' +
-          '━'.repeat(total - i) + '</span> <span class="t-dim">' + kb + '/42.0 kB</span>';
+          '━'.repeat(total - i) + '</span> <span class="t-dim">' + kb + '/42.0 KiB</span>';
         await wait((2200 / total) * (0.6 + Math.random() * 0.8) + (i === stallAt ? 650 : 0));
       }
     }
@@ -798,25 +797,24 @@
     async function story() {
       await wait(600);
       let l = line(prompt);
-      await type(l, 'python -m venv .venv && source .venv/bin/activate', 32);
-      await wait(600);
-
-      l = line(venvPrompt);
-      await wait(450);
-      await type(l, 'pip install korbi', 50);
+      await type(l, 'sudo dnf install korbi', 50);
       await wait(500);
-      line('<span class="t-dim">Collecting korbi</span>');
-      await wait(900);
-      line('  Downloading korbi-1.0.0-py3-none-any.whl (42 kB)');
-      await wait(300);
-      await progress(line());
-      await wait(400);
-      line('Installing collected packages: korbi');
+      line('<span class="t-dim">Updating and loading repositories:</span>');
       await wait(1100);
-      line('Successfully installed korbi-1.0.0');
+      line('<span class="t-dim">Repositories loaded.</span>');
+      await wait(500);
+      line('Installing: korbi-1.0.0-1.fc43.noarch (42 KiB)');
+      await wait(300);
+      l = line('Is this ok [y/N]: ');
+      await wait(900);
+      await type(l, 'y', 50);
+      await wait(400);
+      await progress(line());
+      await wait(700);
+      line('Complete!');
       await wait(1000);
 
-      l = line(venvPrompt);
+      l = line(prompt);
       await wait(800);
       await type(l, 'korbi spawn', 95);
       await wait(600);
@@ -835,7 +833,7 @@
       await type(l, " I'm Korbi and I build small things for the web.", 48);
       await wait(800);
       // Last prompt with ghost text (like a shell autosuggestion) behind the cursor
-      const last = line(venvPrompt);
+      const last = line(prompt);
       const ghost = document.createElement('span');
       ghost.className = 't-ghost';
       ghost.innerHTML = '<span class="ghost-key">press enter for more</span><span class="ghost-tap">tap for more</span>';
