@@ -1018,7 +1018,7 @@
     // ---------- "tools": fly down the canvas to toKIT ----------
     // A quick step back, a fast drop down the sheet that brakes, then in to 100 % and straight.
     // toKIT is put on the sheet as a page of its own (an iframe), right below what's on screen.
-    const tokit = { frame: null, back: null, sOut: 1, cx: 0, cy: 0, live: false };
+    const tokit = { frame: null, back: null, from: '', sOut: 1, cx: 0, cy: 0, live: false };
     const easeOut = t => 1 - Math.pow(1 - t, 3);
     const easeInOut = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
@@ -1057,7 +1057,8 @@
       });
     }
 
-    async function flyToTools() {
+    // push: add a history entry (a click); a browser Forward that lands on #tools already has one
+    async function flyToTools(push = true) {
       if (tokit.frame) return;
       const H = innerHeight;
       [cam.cx, cam.cy] = screenToWorld(innerWidth / 2, H / 2);
@@ -1074,7 +1075,10 @@
       world.append(tokit.frame);
       placeTokit();
 
-      history.pushState({ tools: true }, '', '#tools');
+      if (push) {
+        tokit.from = location.href;
+        history.pushState({ tools: true }, '', '#tools');
+      }
       fade(hud, 0);
       fade(siteFooter, 0);
       await animateCamera(380, { s: { to: tokit.sOut, ease: easeOut } });
@@ -1119,7 +1123,19 @@
       flyToTools();
     });
 
-    addEventListener('popstate', () => { if (location.hash !== '#tools') flyBack(); });
+    // Back leaves toKIT, Forward goes down to it again
+    addEventListener('popstate', () => {
+      if (location.hash !== '#tools') flyBack();
+      else if (!tokit.frame) flyToTools(false);
+    });
+
+    // toKIT's "↑ Korbi" pill: back up to the dashboard. It's a new step forward in the history
+    // (toKIT's own pages sit in between), so Back afterwards goes down to toKIT again.
+    addEventListener('message', e => {
+      if (e.origin !== location.origin || e.data !== 'tokit:back' || !tokit.live) return;
+      history.pushState(null, '', tokit.from);
+      flyBack();
+    });
     addEventListener('resize', () => {
       if (!tokit.live) return;
       placeTokit();
