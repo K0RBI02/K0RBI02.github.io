@@ -6,7 +6,7 @@
       "icon": "icons/toolbox.svg",
       "color": "peach",
       "links": [
-        { "label": "Open ↓", "url": "toKIT/" }
+        { "label": "Open ↓", "url": "src/tools/" }
       ]
     },
     {

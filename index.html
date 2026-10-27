@@ -622,7 +622,7 @@
 </style>
 <script>
   if (location.hash === '#projects') document.documentElement.classList.add('jump');
-  if (location.hash === '#tools') location.replace('toKIT/');   // a reload (or a shared link) while on toKIT goes straight there
+  if (location.hash === '#tools') location.replace('src/tools/');   // a reload (or a shared link) while on toKIT goes straight there
 </script>
 </head>
 <body>
@@ -966,7 +966,7 @@
 
     // ---------- Hidden extra: "things" turns into "tools" ----------
     // Rest on the word for 2 s (or keep a finger on it): it peeks, thinks twice, then turns over
-    const TOOLS_URL = 'toKIT/';   // where "tools" leads: toKIT, on the same sheet below the dashboard
+    const TOOLS_URL = 'src/tools/';   // where "tools" leads: toKIT, on the same sheet below the dashboard
     const flipWord = document.getElementById('flip-word');
     let flipTimer = 0, flippedAt = 0;
 
@@ -1445,8 +1445,11 @@
     sheetBackdrop.addEventListener('click', closeSheet);
     addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
 
-    // Projects load with the page; their Korbi poses are cut out one after another while the intro plays
-    const projectsReady = fetch('projects.json')
+    // Projects load with the page; their Korbi poses are cut out one after another while the intro plays.
+    // Icons and poses in the JSON are paths next to it (src/projects/).
+    const PROJECTS = new URL('src/projects/projects.json', location.href);
+    const fromProjects = path => new URL(path, PROJECTS).href;
+    const projectsReady = fetch(PROJECTS)
       .then(r => r.json()).then(j => j.projects || [])
       .catch(() => []);   // no projects file: nothing to show
     // ...but only after the intro's own two poses are ready, so the intro never waits on them
@@ -1456,7 +1459,7 @@
       const out = [];
       for (const p of projects) {
         await new Promise(r => setTimeout(r, 50));   // a breath between cuts, so typing stays smooth
-        out.push(p.korbi ? await cutOutPose(p.korbi).catch(() => null) : null);
+        out.push(p.korbi ? await cutOutPose(fromProjects(p.korbi)).catch(() => null) : null);
       }
       return out;
     });
@@ -1464,7 +1467,7 @@
     async function runShowcase() {
       const projects = await projectsReady;
       const icons = await Promise.all(projects.map(p =>
-        fetch(p.icon).then(r => (r.ok ? r.text() : '')).catch(() => '')));
+        fetch(fromProjects(p.icon)).then(r => (r.ok ? r.text() : '')).catch(() => '')));
       // One project at a time: big icon, name, description, links; the visitor clicks on
       if (!instant) {
         const poses = await posesReady;
