@@ -12,6 +12,7 @@
       "name": "Daily Tracking",
       "description": "A simple daily task tracker that shows your progress at a glance.",
       "icon": "icons/daily-tracking.svg",
+      "korbi": "korbi-clipboard.webp",
       "color": "cream",
       "demo": "https://k0rbi02.github.io/Daily-Tracking_/",
       "code": "https://github.com/K0RBI02/Daily-Tracking_"
@@ -27,6 +28,7 @@
       "name": "ReGo",
       "description": "An Android app for the daily commute: push alerts for delays, cancellations and platform changes on your routes.",
       "icon": "icons/rego.svg",
+      "korbi": "korbi-travel.webp",
       "color": "blue",
       "code": "https://github.com/K0RBI02/ReGo"
     },
@@ -34,6 +36,7 @@
       "name": "Recipe Planner",
       "description": "A Minecraft mod: plan what you want to craft and see which ingredients you still need.",
       "icon": "icons/recipe-planner.svg",
+      "korbi": "korbi-laptop.webp",
       "color": "cream",
       "links": [
         { "label": "Modrinth ↗", "url": "https://modrinth.com/mod/recipe-planner" },
