@@ -114,6 +114,23 @@
 
   .big-title > span { display: block; }
 
+  /* Hidden extra: rest on "things" for a while and it turns over (hesitantly) to "tools" */
+  .flip-word {
+    position: relative;
+    display: inline-block;
+    color: inherit;
+    text-decoration: none;
+    pointer-events: auto;
+    cursor: default;
+    transform-style: preserve-3d;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+  .flip-word[href] { cursor: pointer; }
+  .flip-front, .flip-back { display: inline-block; backface-visibility: hidden; }
+  .flip-back { position: absolute; left: 0; top: 0; transform: rotateX(180deg); }
+
   /* Zero-size marker on the baseline of the second line, so the layout can measure it */
   .baseline { display: inline-block; width: 0; height: 0; }
 
@@ -444,6 +461,7 @@
     position: fixed;
     z-index: 1;
     inset: 0;
+    pointer-events: none;   /* the full-screen layer lets the headline underneath be hovered */
     display: grid;
     place-items: center;
     padding: var(--gutter);
@@ -451,6 +469,7 @@
 
   /* Terminal */
   .terminal {
+    pointer-events: auto;   /* taps on the window still count ("tap for more") */
     --term-bg: #161514;
     --term-bar: #201E1C;
     --term-ink: #ECE9E3;
@@ -619,7 +638,7 @@
     </section>
 
     <h1 class="big-title" id="big-title">
-      <span>Small things</span>
+      <span>Small <a class="flip-word" id="flip-word"><span class="flip-front">things</span><span class="flip-back" aria-hidden="true">tools</span></a></span>
       <span>for the <span class="underline">web<svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M3 13 C 40 5, 80 17, 120 9 S 180 6, 197 11" fill="none" stroke="var(--color-accent)" stroke-width="7" stroke-linecap="round"/></svg></span><span id="dot">.</span><span class="baseline" id="baseline"></span></span>
       <span class="selection" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
     </h1>
@@ -931,6 +950,49 @@
     const zoomPill = document.getElementById('zoom-pill');
     const siteFooter = document.getElementById('site-footer');
     document.getElementById('year').textContent = new Date().getFullYear();   // stays current on its own
+
+    // ---------- Hidden extra: "things" turns into "tools" ----------
+    // Rest on the word for 2 s (or keep a finger on it): it peeks, thinks twice, then turns over
+    const TOOLS_URL = '';   // where "tools" leads once it has shown itself; not decided yet
+    const flipWord = document.getElementById('flip-word');
+    let flipTimer = 0, flippedAt = 0;
+
+    function armFlip() {
+      if (flippedAt || flipTimer || parseFloat(bigTitle.style.opacity || 0) < 0.5) return;
+      flipTimer = setTimeout(turnToTools, 2000);
+    }
+
+    function disarmFlip() {
+      clearTimeout(flipTimer);
+      flipTimer = 0;
+    }
+
+    function turnToTools() {
+      flippedAt = performance.now();
+      const turn = (deg, offset) => ({ transform: `perspective(4em) rotateX(${deg}deg)`, offset, easing: 'ease-in-out' });
+      flipWord.animate([
+        turn(0, 0),
+        turn(35, 0.12),    // a peek...
+        turn(0, 0.26),     // ...no, better not
+        turn(0, 0.42),
+        turn(75, 0.55),    // mhm, sure?
+        turn(55, 0.66),
+        turn(80, 0.74),
+        turn(180, 1)       // fine, here I am
+      ], { duration: reduced ? 0 : 2600, fill: 'forwards' });
+      flipWord.querySelector('.flip-front').setAttribute('aria-hidden', 'true');
+      flipWord.querySelector('.flip-back').removeAttribute('aria-hidden');
+      if (TOOLS_URL) Object.assign(flipWord, { href: TOOLS_URL, target: '_blank', rel: 'noopener' });
+    }
+
+    flipWord.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') armFlip(); });
+    flipWord.addEventListener('pointerleave', disarmFlip);
+    flipWord.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') armFlip(); });
+    flipWord.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') disarmFlip(); });
+    flipWord.addEventListener('pointercancel', disarmFlip);
+    flipWord.addEventListener('contextmenu', e => e.preventDefault());
+    // The finger lifting after a long press is a click too: only count clicks once "tools" has fully turned
+    flipWord.addEventListener('click', e => { if (performance.now() - flippedAt < 2700) e.preventDefault(); });
     const cam = { s: 1, a: 0, px: 0, py: 0, cx: 0, cy: 0 };
     const TILT = -5 * Math.PI / 180;   // the canvas ends up slightly askew
     const GRID = 32;                   // fine grid cell, px at 100 %
