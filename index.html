@@ -1109,6 +1109,16 @@
       fade(siteFooter, 1);
     }
 
+    // Any other link to toKIT (the Toolbox card's "Open") takes the same flight instead of a new tab
+    addEventListener('click', e => {
+      const a = e.target.closest('a[href]');
+      if (!a || a === flipWord || new URL(a.href).pathname !== new URL(TOOLS_URL, location.href).pathname) return;
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
+      e.preventDefault();
+      closeSheet();
+      flyToTools();
+    });
+
     addEventListener('popstate', () => { if (location.hash !== '#tools') flyBack(); });
     addEventListener('resize', () => {
       if (!tokit.live) return;

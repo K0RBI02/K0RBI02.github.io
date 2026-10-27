@@ -4,7 +4,10 @@
       "name": "Toolbox",
       "description": "The small tools you need now and then: PDF and image helpers, right in the browser. No ads, no sign-up, your files stay on your device.",
       "icon": "icons/toolbox.svg",
-      "color": "peach"
+      "color": "peach",
+      "links": [
+        { "label": "Open ↓", "url": "toKIT/" }
+      ]
     },
     {
       "name": "Daily Tracking",
