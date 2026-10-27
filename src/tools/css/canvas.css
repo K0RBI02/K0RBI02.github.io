@@ -43,6 +43,19 @@ body { overscroll-behavior: none; }
   transition: opacity .5s ease;
 }
 .big-title > span { display: block; }
+
+/* Korbi sits on the D of "Drop it.", legs over its front; he scales, turns and fades with the headline.
+   The pose's seat (where his hands hold the edge) is 58 % down the image, set on the D's top edge,
+   which in Instrument Sans Bold lies 0.25em below the top of the line box. */
+.seat { position: relative; }
+.korbi-seat {
+  position: absolute;
+  left: 50%;
+  top: calc(0.25em - 0.58 * 1.05em);
+  height: 1.05em;
+  width: auto;
+  transform: translateX(-50%);
+}
 .underline { position: relative; }
 .underline svg {
   position: absolute;
