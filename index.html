@@ -131,6 +131,16 @@
   .flip-front, .flip-back { display: inline-block; backface-visibility: hidden; }
   .flip-back { position: absolute; left: 0; top: 0; transform: rotateX(180deg); }
 
+  /* toKIT on the same sheet, below the dashboard; it only takes input once the camera has landed on it */
+  .tokit-frame {
+    position: absolute;
+    z-index: 3;
+    border: 0;
+    background: var(--color-bg);
+    pointer-events: none;
+  }
+  .tokit-frame.is-live { pointer-events: auto; }
+
   /* Zero-size marker on the baseline of the second line, so the layout can measure it */
   .baseline { display: inline-block; width: 0; height: 0; }
 
@@ -610,7 +620,10 @@
   /* /#projects: stay hidden while the tour runs through at once, then fade in on the dashboard */
   .jump body { opacity: 0; }
 </style>
-<script>if (location.hash === '#projects') document.documentElement.classList.add('jump');</script>
+<script>
+  if (location.hash === '#projects') document.documentElement.classList.add('jump');
+  if (location.hash === '#tools') location.replace('toKIT/');   // a reload (or a shared link) while on toKIT goes straight there
+</script>
 </head>
 <body>
   <div class="grid" id="grid-fine"></div>
@@ -953,7 +966,7 @@
 
     // ---------- Hidden extra: "things" turns into "tools" ----------
     // Rest on the word for 2 s (or keep a finger on it): it peeks, thinks twice, then turns over
-    const TOOLS_URL = '';   // where "tools" leads once it has shown itself; not decided yet
+    const TOOLS_URL = 'toKIT/';   // where "tools" leads: toKIT, on the same sheet below the dashboard
     const flipWord = document.getElementById('flip-word');
     let flipTimer = 0, flippedAt = 0;
 
@@ -982,7 +995,9 @@
       ], { duration: reduced ? 0 : 2600, fill: 'forwards' });
       flipWord.querySelector('.flip-front').setAttribute('aria-hidden', 'true');
       flipWord.querySelector('.flip-back').removeAttribute('aria-hidden');
-      if (TOOLS_URL) Object.assign(flipWord, { href: TOOLS_URL, target: '_blank', rel: 'noopener' });
+      flipWord.href = TOOLS_URL;
+      // Fetch toKIT while the word is still turning, so the flight down lands on a page that's ready
+      document.head.append(Object.assign(document.createElement('link'), { rel: 'prefetch', href: TOOLS_URL }));
     }
 
     flipWord.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') armFlip(); });
@@ -991,8 +1006,117 @@
     flipWord.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') disarmFlip(); });
     flipWord.addEventListener('pointercancel', disarmFlip);
     flipWord.addEventListener('contextmenu', e => e.preventDefault());
-    // The finger lifting after a long press is a click too: only count clicks once "tools" has fully turned
-    flipWord.addEventListener('click', e => { if (performance.now() - flippedAt < 2700) e.preventDefault(); });
+    // The finger lifting after a long press is a click too: only count clicks once "tools" has fully turned.
+    // Then a plain click flies down to toKIT; Ctrl/Cmd/Shift-click opens it in a new tab as usual.
+    flipWord.addEventListener('click', e => {
+      if (!flippedAt || performance.now() - flippedAt < 2700) return e.preventDefault();
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
+      e.preventDefault();
+      flyToTools();
+    });
+
+    // ---------- "tools": fly down the canvas to toKIT ----------
+    // A quick step back, a fast drop down the sheet that brakes, then in to 100 % and straight.
+    // toKIT is put on the sheet as a page of its own (an iframe), right below what's on screen.
+    const tokit = { frame: null, back: null, sOut: 1, cx: 0, cy: 0, live: false };
+    const easeOut = t => 1 - Math.pow(1 - t, 3);
+    const easeInOut = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+    // One camera move on a timeline; each track ({ to, ease, start, end } with start/end in 0..1) eases on its own.
+    // The pivot goes to the screen's middle first; the zoom moves on a log scale like everywhere else.
+    function animateCamera(ms, tracks) {
+      [cam.cx, cam.cy] = screenToWorld(innerWidth / 2, innerHeight / 2);
+      cam.px = innerWidth / 2;
+      cam.py = innerHeight / 2;
+      const moves = Object.entries(tracks).map(([key, { to, ease, start = 0, end = 1 }]) => ({
+        key, ease, start, end,
+        from: key === 's' ? Math.log(cam.s) : cam[key],
+        to: key === 's' ? Math.log(to) : to
+      }));
+      return new Promise(resolve => {
+        const t0 = performance.now();
+        (function tick(now) {
+          const t = reduced ? 1 : Math.min(1, (now - t0) / ms);
+          for (const m of moves) {
+            const v = m.from + (m.to - m.from) * m.ease(Math.min(1, Math.max(0, (t - m.start) / (m.end - m.start))));
+            cam[m.key] = m.key === 's' ? Math.exp(v) : v;
+          }
+          applyCamera();
+          if (t < 1) requestAnimationFrame(tick); else resolve();
+        })(t0);
+      });
+    }
+
+    // toKIT's page is exactly one screen big, so at 100 % and straight it fills the window
+    function placeTokit() {
+      Object.assign(tokit.frame.style, {
+        left: (tokit.cx - innerWidth / 2) + 'px',
+        top: (tokit.cy - innerHeight / 2) + 'px',
+        width: innerWidth + 'px',
+        height: innerHeight + 'px'
+      });
+    }
+
+    async function flyToTools() {
+      if (tokit.frame) return;
+      const H = innerHeight;
+      [cam.cx, cam.cy] = screenToWorld(innerWidth / 2, H / 2);
+      cam.px = innerWidth / 2;
+      cam.py = H / 2;
+      tokit.back = { cx: cam.cx, cy: cam.cy, s: cam.s, a: cam.a };
+      tokit.sOut = cam.s * 0.75;
+
+      // "Down" on screen, in world units: past the bottom of the view (after the step back), a gap, half a page
+      const down = H / 2 / tokit.sOut + H * 0.35 + H / 2;
+      tokit.cx = cam.cx + down * Math.sin(cam.a);
+      tokit.cy = cam.cy + down * Math.cos(cam.a);
+      tokit.frame = Object.assign(document.createElement('iframe'), { className: 'tokit-frame', src: TOOLS_URL, title: 'toKIT' });
+      world.append(tokit.frame);
+      placeTokit();
+
+      history.pushState({ tools: true }, '', '#tools');
+      fade(hud, 0);
+      fade(siteFooter, 0);
+      await animateCamera(380, { s: { to: tokit.sOut, ease: easeOut } });
+      await animateCamera(1700, {
+        cx: { to: tokit.cx, ease: easeOut, end: 0.62 },
+        cy: { to: tokit.cy, ease: easeOut, end: 0.62 },
+        s: { to: 1, ease: easeInOut, start: 0.45 },
+        a: { to: 0, ease: easeInOut, start: 0.45 }
+      });
+      tokit.live = true;
+      tokit.frame.classList.add('is-live');
+      tokit.frame.focus();
+      if (location.hash !== '#tools') flyBack();   // back was pressed during the flight
+    }
+
+    // Back button: the same way up again, then toKIT is put away
+    async function flyBack() {
+      if (!tokit.live) return;
+      tokit.live = false;
+      tokit.frame.classList.remove('is-live');
+      const b = tokit.back;
+      await animateCamera(1500, {
+        s: { to: tokit.sOut, ease: easeInOut, end: 0.4 },
+        a: { to: b.a, ease: easeInOut, end: 0.4 },
+        cx: { to: b.cx, ease: easeInOut, start: 0.2, end: 0.9 },
+        cy: { to: b.cy, ease: easeInOut, start: 0.2, end: 0.9 }
+      });
+      await animateCamera(450, { s: { to: b.s, ease: easeOut } });
+      tokit.frame.remove();
+      tokit.frame = null;
+      fade(hud, 1);
+      fade(siteFooter, 1);
+    }
+
+    addEventListener('popstate', () => { if (location.hash !== '#tools') flyBack(); });
+    addEventListener('resize', () => {
+      if (!tokit.live) return;
+      placeTokit();
+      cam.px = innerWidth / 2;
+      cam.py = innerHeight / 2;
+      applyCamera();
+    });
     const cam = { s: 1, a: 0, px: 0, py: 0, cx: 0, cy: 0 };
     const TILT = -5 * Math.PI / 180;   // the canvas ends up slightly askew
     const GRID = 32;                   // fine grid cell, px at 100 %
