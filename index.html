@@ -1326,6 +1326,29 @@
       showcase.style.setProperty('--box-h', Math.round(h) + 'px');
     }
 
+    // A project's Korbi pose stays only where it doesn't cost the project room: the name on one line,
+    // the buttons on one row, nothing past the free space, and (stacked on phones) clear of the icon and
+    // of every line of text. Otherwise the detail view shows without him.
+    async function fitPose() {
+      const pose = spotlight.querySelector('.spotlight-korbi');
+      if (!pose) return;
+      await pose.decode().catch(() => {});   // its width is only known once the image is decoded
+      const h2 = spotlight.querySelector('h2');
+      const oneLine = h2.offsetHeight < parseFloat(getComputedStyle(h2).fontSize) * 1.6;
+      const links = [...spotlight.querySelectorAll('.spotlight-links > *')];
+      const oneRow = links.every(a => a.offsetTop === links[0].offsetTop);
+      // Stacked on phones he is placed beside the icon, outside the flow, and makes nothing taller
+      const inFlow = getComputedStyle(pose).position !== 'absolute';
+      const inBox = spotlight.scrollWidth <= box2.w + 1 && (!inFlow || spotlight.offsetHeight <= box2.h + 1);
+      const r = pose.getBoundingClientRect();
+      const apart = o => r.left >= o.right || r.right <= o.left || r.top >= o.bottom || r.bottom <= o.top;
+      const textRect = el => { const range = document.createRange(); range.selectNodeContents(el); return range.getBoundingClientRect(); };
+      const clear = apart(spotlight.querySelector('.tile').getBoundingClientRect()) &&
+        [...spotlight.querySelectorAll('.spotlight-text > .label, .spotlight-text > h2')].every(el => apart(textRect(el))) &&
+        links.every(a => apart(a.getBoundingClientRect()));
+      pose.hidden = !(oneLine && oneRow && inBox && clear);
+    }
+
     // Overview: cards as big as the free space allows, wrapping into rows when there are many
     function sizeCards(n) {
       const { w, h } = box2;
@@ -1482,6 +1505,7 @@
               <p class="label">${esc(p.description)}</p>
               <div class="spotlight-links">${linksOf(p)}</div>
             </div>${poses[i] ? `<img class="spotlight-korbi${poses[i].cropped ? ' is-cropped' : ''}" src="${poses[i].url}" alt="">` : ''}`;
+          await fitPose();
           nextWhat.textContent = next;
           if (i === 0) { placeNextHint(); fade(nextHint, 1); }
           // Listen from the start, so a key pressed while it fades in still counts
