@@ -616,6 +616,30 @@
     will-change: transform;
   }
 
+  /* His breathing while he holds the edge runs on the compositor: smooth sub-pixel motion, even on a
+     1x screen or while the page is busy (2 px moved from script snap to whole pixels and stutter) */
+  .peek-breath {
+    position: absolute;
+    inset: 0;
+  }
+
+  .peek.is-breathing .peek-breath {
+    will-change: transform;
+    animation: korbi-breathe 3.7s infinite;
+  }
+
+  @keyframes korbi-breathe {
+    0% { transform: translateY(0); animation-timing-function: ease-out; }
+    25% { transform: translateY(2px); animation-timing-function: ease-in; }
+    50% { transform: translateY(0); animation-timing-function: ease-out; }
+    75% { transform: translateY(-2px); animation-timing-function: ease-in; }
+    100% { transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .peek.is-breathing .peek-breath { animation: none; }
+  }
+
   .peek img {
     position: absolute;
     left: 0;
@@ -654,8 +678,10 @@
 
     <div class="peek" id="peek" role="img" aria-label="Korbi, leaning over the terminal">
       <div class="peek-body" id="peek-body">
-        <img id="pose-lean" alt="">
-        <img id="pose-wave" alt="" style="opacity:0">
+        <div class="peek-breath">
+          <img id="pose-lean" alt="">
+          <img id="pose-wave" alt="" style="opacity:0">
+        </div>
       </div>
     </div>
 
@@ -880,7 +906,6 @@
     let lastFrame = 0;
 
     function render(now) {
-      const t = now / 1000;
       const frames = Math.min(6, (now - (lastFrame || now)) / (1000 / 60)) || 1;
       lastFrame = now;
       const ease = rate => (skipping ? 1 : 1 - Math.pow(1 - rate, frames));
@@ -893,6 +918,7 @@
         state.grabbed = true;
         state.dip = 1;
         setClip();
+        peek.classList.add('is-breathing');
       }
       state.dip += (0 - state.dip) * ease(0.12);
 
@@ -901,8 +927,7 @@
       poses.wave.style.opacity = state.wave.toFixed(3);
 
       const hidden = EDGE_Y * scale;                        // fully below the window edge
-      const breathe = state.grabbed ? Math.sin(t * 1.7) * 2 : 0;
-      const y = hidden * (1 - state.lift) + state.dip * 8 + breathe;
+      const y = hidden * (1 - state.lift) + state.dip * 8;
       peekBody.style.transform = `translateY(${y.toFixed(1)}px)`;
 
       requestAnimationFrame(render);
