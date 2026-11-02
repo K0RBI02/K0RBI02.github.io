@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Backbone</title>
+    <link>https://k0rbi02.github.io/src/blog/</link>
+    <description>New IT and Smart Technologie explained — for all of kind</description>
+    <language>en</language>
+    <atom:link href="https://k0rbi02.github.io/src/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>DNS: The Quiet Service Every Connection Depends On</title>
+      <link>https://k0rbi02.github.io/src/blog/dns-explained/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/dns-explained/</guid>
+      <description>When the internet &quot;is down&quot; but your connection is fine, DNS is usually the reason. Here is how it works and how to make it reliable.</description>
+      <category>Basics</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>RAID and NAS: What Disk Arrays Really Protect You From</title>
+      <link>https://k0rbi02.github.io/src/blog/raid-and-nas-explained/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/raid-and-nas-explained/</guid>
+      <description>RAID 0, 1, 5 and 10 explained, which one fits a home or small office NAS, and why none of them replaces a backup.</description>
+      <category>Basics</category>
+      <dc:creator>Claude &amp; Korbi</dc:creator>
+      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>From Your Sofa to the World: How the Internet's Backbone Works</title>
+      <link>https://k0rbi02.github.io/src/blog/how-the-internet-backbone-works/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/how-the-internet-backbone-works/</guid>
+      <description>Exchange points, undersea cables and a protocol built on trust. The journey of a single click, and why it usually ends surprisingly close to home.</description>
+      <category>Basics</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Mesh Wi‑Fi Explained: One Network for the Whole Home</title>
+      <link>https://k0rbi02.github.io/src/blog/mesh-wifi-explained/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/mesh-wifi-explained/</guid>
+      <description>What a mesh system really does, why the link between the nodes decides everything, and how to place them so the promise holds.</description>
+      <category>Home Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Can't Reach Home From Outside? CGNAT, Public IPv4 and Dynamic DNS</title>
+      <link>https://k0rbi02.github.io/src/blog/cgnat-reaching-home-from-outside/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/cgnat-reaching-home-from-outside/</guid>
+      <description>Why port forwarding sometimes does nothing at all, how to find out if your line is shared, and the ways around it.</description>
+      <category>Connectivity</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>IP Addresses, DHCP and NAT: How Your Devices Get Online</title>
+      <link>https://k0rbi02.github.io/src/blog/ip-addresses-dhcp-nat/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/ip-addresses-dhcp-nat/</guid>
+      <description>What happens in the first second after a phone joins your Wi‑Fi, and why it explains so many everyday network problems.</description>
+      <category>Basics</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Closet Rack, Colocation or Cloud: Where Should Your Servers Live?</title>
+      <link>https://k0rbi02.github.io/src/blog/closet-rack-colocation-or-cloud/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/closet-rack-colocation-or-cloud/</guid>
+      <description>What a data centre actually does for you, what colocation costs in effort, and when a small business is better off with the cloud or a well-kept closet.</description>
+      <category>Server Room</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>The 3‑2‑1 Rule: Backups That Survive Real Life</title>
+      <link>https://k0rbi02.github.io/src/blog/backups-3-2-1/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/backups-3-2-1/</guid>
+      <description>Theft, ransomware, a dropped laptop. A simple rule decides whether you lose an afternoon or years of work.</description>
+      <category>Security</category>
+      <dc:creator>Claude &amp; Korbi</dc:creator>
+      <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>One Cable Beats Any Gadget: Network Cabling at Home</title>
+      <link>https://k0rbi02.github.io/src/blog/home-network-cabling/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/home-network-cabling/</guid>
+      <description>Building, renovating or just fed up with weak Wi‑Fi upstairs? A few cables in the right places solve problems no repeater can.</description>
+      <category>Home Network</category>
+      <dc:creator>Claude &amp; Korbi</dc:creator>
+      <pubDate>Fri, 30 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Why Your Wi‑Fi Is Slow (and It's Rarely the Internet)</title>
+      <link>https://k0rbi02.github.io/src/blog/why-your-wifi-is-slow/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/why-your-wifi-is-slow/</guid>
+      <description>Most speed problems happen inside the building. Here is how to find and fix them.</description>
+      <category>Home Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 28 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>A One‑Second Power Cut, a Ten‑Minute Outage: Why Networks Need a UPS</title>
+      <link>https://k0rbi02.github.io/src/blog/ups-for-your-network/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/ups-for-your-network/</guid>
+      <description>Routers, NAS and phone systems hate unstable power. A small uninterruptible power supply fixes more than you would expect.</description>
+      <category>Business Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Mon, 26 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Matter, Thread, Zigbee: A Smart Home That Works Without the Cloud</title>
+      <link>https://k0rbi02.github.io/src/blog/smart-home-matter-thread-zigbee/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/smart-home-matter-thread-zigbee/</guid>
+      <description>Light bulbs, plugs and sensors speak many languages. Here is what they mean for your network and how to keep everything local and reliable.</description>
+      <category>Home Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Sat, 24 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Fifteen Minutes for Your Router: A Security Checklist</title>
+      <link>https://k0rbi02.github.io/src/blog/router-hardening/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/router-hardening/</guid>
+      <description>The router is the front door of every home and small office network. A few settings decide whether it stays locked.</description>
+      <category>Security</category>
+      <dc:creator>Claude &amp; Korbi</dc:creator>
+      <pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Fiber, Cable, DSL or 5G: What Your Connection Really Delivers</title>
+      <link>https://k0rbi02.github.io/src/blog/fiber-cable-dsl-5g/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/fiber-cable-dsl-5g/</guid>
+      <description>The advertised speed is only half the story. Latency, upload and stability matter just as much.</description>
+      <category>Connectivity</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Wi‑Fi 6, 6E and 7: What the Numbers Really Mean</title>
+      <link>https://k0rbi02.github.io/src/blog/wifi-6-6e-7-explained/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/wifi-6-6e-7-explained/</guid>
+      <description>Router boxes promise tens of gigabits. Here is what each generation actually changes, and when an upgrade is worth it.</description>
+      <category>Home Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Mon, 19 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>SPF, DKIM, DMARC: Making Your Business Email Trustworthy</title>
+      <link>https://k0rbi02.github.io/src/blog/email-spf-dkim-dmarc/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/email-spf-dkim-dmarc/</guid>
+      <description>Why emails from your own domain land in spam, how forged emails in your name get through, and the three DNS records that fix both.</description>
+      <category>Business Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Sat, 17 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Guests, Gadgets and You: Segmenting Your Home Network</title>
+      <link>https://k0rbi02.github.io/src/blog/segmenting-your-home-network/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/segmenting-your-home-network/</guid>
+      <description>Why your smart TV and your work laptop should not share the same network — and how to separate them.</description>
+      <category>Security</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Why Video Calls Stutter When Someone Uploads a File</title>
+      <link>https://k0rbi02.github.io/src/blog/video-calls-bufferbloat/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/video-calls-bufferbloat/</guid>
+      <description>Your speed test looks great, yet calls freeze whenever the network is busy. The culprit is called bufferbloat, and it can be fixed.</description>
+      <category>Home Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Mon, 12 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Passwords, Passkeys and Two‑Factor: The Foundation of Everything Else</title>
+      <link>https://k0rbi02.github.io/src/blog/passwords-passkeys-2fa/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/passwords-passkeys-2fa/</guid>
+      <description>Every router, NAS and email account is only as safe as its login. Here is a setup that is secure and still easy to live with.</description>
+      <category>Security</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Sat, 10 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Small Business Networks: Six Things That Actually Matter</title>
+      <link>https://k0rbi02.github.io/src/blog/small-business-network-essentials/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/small-business-network-essentials/</guid>
+      <description>Redundancy, structure and documentation keep a small office running — far more than expensive hardware.</description>
+      <category>Business Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 07 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Parental Controls That Actually Work: Router, DNS and Devices</title>
+      <link>https://k0rbi02.github.io/src/blog/parental-controls-network/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/parental-controls-network/</guid>
+      <description>No single setting keeps children safe online. Combined in layers, a few simple tools set sensible limits without constant arguments.</description>
+      <category>Home Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Mon, 05 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Your First Home Server: Small Box, Big Difference</title>
+      <link>https://k0rbi02.github.io/src/blog/first-home-server/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/first-home-server/</guid>
+      <description>A Raspberry Pi or a mini PC can block ads, store photos and run your smart home. Here is what is worth running and how to keep it safe.</description>
+      <category>Server Room</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Sat, 03 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Port Forwarding, VPN, Zero Trust: Reaching Your Network Safely</title>
+      <link>https://k0rbi02.github.io/src/blog/secure-remote-access/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/secure-remote-access/</guid>
+      <description>Remote access is one of the most common ways attackers get in. Here is how to do it right.</description>
+      <category>Security</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 30 Sep 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Business Phones Over the Internet: What Changes and What to Check</title>
+      <link>https://k0rbi02.github.io/src/blog/business-voip-telephony/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/business-voip-telephony/</guid>
+      <description>Classic phone lines are disappearing. Here is how IP telephony works, what it needs from your network, and the details that matter in an emergency.</description>
+      <category>Business Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 30 Sep 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Hello and Goodbye: Accounts and Devices When People Join or Leave</title>
+      <link>https://k0rbi02.github.io/src/blog/onboarding-offboarding/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/onboarding-offboarding/</guid>
+      <description>In small businesses, access grows quietly and is rarely taken away. A simple checklist for both days keeps the doors in order.</description>
+      <category>Business Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Sat, 26 Sep 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>IPv6 at Home and in the Office: What Changes and What Doesn't</title>
+      <link>https://k0rbi02.github.io/src/blog/ipv6-at-home-and-in-the-office/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/ipv6-at-home-and-in-the-office/</guid>
+      <description>Your network probably already speaks IPv6. Here is what that means for addresses, security and everyday use.</description>
+      <category>Basics</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 23 Sep 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Clicked on a Phishing Link? The First 60 Minutes</title>
+      <link>https://k0rbi02.github.io/src/blog/phishing-first-60-minutes/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/phishing-first-60-minutes/</guid>
+      <description>It happens to careful people too. What to do right away, in which order, and who to tell, at home and in a small business.</description>
+      <category>Security</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 23 Sep 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Why the Printer Keeps Disappearing (and Scan‑to‑Folder Stopped Working)</title>
+      <link>https://k0rbi02.github.io/src/blog/network-printers-scanners/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/network-printers-scanners/</guid>
+      <description>Network printers and scanners cause more support calls than almost anything else. Most problems have the same few causes.</description>
+      <category>Business Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Sat, 19 Sep 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Virtual Machines and Containers, Explained Without the Jargon</title>
+      <link>https://k0rbi02.github.io/src/blog/vms-and-containers/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/vms-and-containers/</guid>
+      <description>One physical server, many systems. What VMs and containers are, how they differ, and which one fits which job.</description>
+      <category>Server Room</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 16 Sep 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>One Address, Many Services: Reverse Proxies and HTTPS</title>
+      <link>https://k0rbi02.github.io/src/blog/reverse-proxy-https/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/reverse-proxy-https/</guid>
+      <description>How blog.example.com and dev.example.com end up on the same server, why certificates renew themselves, and where to put the login in front of internal tools.</description>
+      <category>Server Room</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Sat, 12 Sep 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Know Before Your Customers Do: Monitoring for Small Networks</title>
+      <link>https://k0rbi02.github.io/src/blog/monitoring-small-networks/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/monitoring-small-networks/</guid>
+      <description>The internet line, the backup, the certificate, the disk. A few simple checks warn you before something small becomes an outage.</description>
+      <category>Server Room</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 09 Sep 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>VLANs and Managed Switches: Separate Networks on One Set of Cables</title>
+      <link>https://k0rbi02.github.io/src/blog/vlans-managed-switches/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/vlans-managed-switches/</guid>
+      <description>Tagged, untagged, trunk, PVID. What the switch settings mean, and a simple plan for separating guests, smart devices and work.</description>
+      <category>Server Room</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Sat, 05 Sep 2026 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
