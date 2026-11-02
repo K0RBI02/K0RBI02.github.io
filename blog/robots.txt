@@ -1,4 +1,0 @@
-User-Agent: *
-Allow: /
-
-Sitemap: https://k0rbi02.github.io/blog/sitemap.xml
