@@ -13,6 +13,7 @@
       "name": "Fjell",
       "description": "A calm Android launcher: a hand-lettered clock over flat landscapes that follow the sun, your everyday apps in a quiet grid, everything else in a tidy stack.",
       "icon": "icons/fjell.svg",
+      "korbi": "korbi-phone.webp",
       "color": "blue",
       "links": [
         { "label": "Download ↗", "url": "https://github.com/K0RBI02/Fjell/releases/latest" },
@@ -23,7 +24,7 @@
       "name": "GWAY",
       "description": "A lightweight, private web UI for a 5G router, running as a Home Assistant add-on.",
       "icon": "icons/gway.svg",
-      "color": "apricot",
+      "color": "cream",
       "code": "https://github.com/K0RBI02/GWAY"
     },
     {
@@ -32,7 +33,10 @@
       "icon": "icons/rego.svg",
       "korbi": "korbi-travel.webp",
       "color": "blue",
-      "code": "https://github.com/K0RBI02/ReGo"
+      "links": [
+        { "label": "Download ↗", "url": "https://github.com/K0RBI02/ReGo/releases/latest" },
+        { "label": "Code", "url": "https://github.com/K0RBI02/ReGo" }
+      ]
     },
     {
       "name": "Recipe Planner",
