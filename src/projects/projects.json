@@ -10,6 +10,15 @@
       ]
     },
     {
+      "name": "Backbone",
+      "description": "A blog about internet infrastructure, from the living room to the server room: Wi‑Fi, backups, security and the backbone itself. Articles by Claude, edited by me, every cover drawn in code.",
+      "icon": "icons/blog.svg",
+      "color": "cream",
+      "links": [
+        { "label": "Read ↓", "url": "src/blog/" }
+      ]
+    },
+    {
       "name": "Fjell",
       "description": "A calm Android launcher: a hand-lettered clock over flat landscapes that follow the sun, your everyday apps in a quiet grid, everything else in a tidy stack.",
       "icon": "icons/fjell.svg",
