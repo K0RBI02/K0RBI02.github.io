@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- a phone -->
+  <path d="M32 10 C 44 9, 56 9, 68 10 C 73 10, 76 13, 76 18 C 77 39, 77 61, 76 82 C 76 87, 73 90, 68 90 C 56 91, 44 91, 32 90 C 27 90, 24 87, 24 82 C 23 61, 23 39, 24 18 C 24 13, 27 10, 32 10 Z"/>
+  <!-- the clock -->
+  <path d="M40 22 C 45 21, 55 21, 60 22"/>
+  <!-- sun over two ridges and the shore -->
+  <circle cx="60" cy="38" r="5"/>
+  <path d="M25 58 C 33 50, 38 44, 44 40 C 50 45, 54 50, 58 54 C 63 51, 68 48, 75 52"/>
+  <path d="M25 66 C 36 63, 46 60, 54 58 C 62 61, 69 63, 75 64"/>
+  <!-- the app row -->
+  <circle cx="34" cy="78" r="1.5" fill="currentColor"/>
+  <circle cx="45" cy="78" r="1.5" fill="currentColor"/>
+  <circle cx="56" cy="78" r="1.5" fill="currentColor"/>
+  <circle cx="67" cy="78" r="1.5" fill="currentColor"/>
+</svg>

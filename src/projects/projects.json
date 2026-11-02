@@ -10,13 +10,14 @@
       ]
     },
     {
-      "name": "Daily Tracking",
-      "description": "A simple daily task tracker that shows your progress at a glance.",
-      "icon": "icons/daily-tracking.svg",
-      "korbi": "korbi-clipboard.webp",
-      "color": "cream",
-      "demo": "https://k0rbi02.github.io/Daily-Tracking_/",
-      "code": "https://github.com/K0RBI02/Daily-Tracking_"
+      "name": "Fjell",
+      "description": "A calm Android launcher: a hand-lettered clock over flat landscapes that follow the sun, your everyday apps in a quiet grid, everything else in a tidy stack.",
+      "icon": "icons/fjell.svg",
+      "color": "blue",
+      "links": [
+        { "label": "Download ↗", "url": "https://github.com/K0RBI02/Fjell/releases/latest" },
+        { "label": "Code", "url": "https://github.com/K0RBI02/Fjell" }
+      ]
     },
     {
       "name": "GWAY",
