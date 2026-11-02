@@ -28,6 +28,7 @@
       "links": [
         { "label": "Code", "url": "https://github.com/K0RBI02/GWAY" }
         { "label": "HomeAssistant ↗", "url": "https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FK0RBI02%2FGWAY" }
+      ]
     },
     {
       "name": "ReGo",
