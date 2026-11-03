@@ -9,8 +9,6 @@ Dieser Ordner enthält die automatisch erzeugte, statische Version des Blogs.
 
 Offenlegung gemäß § 25 Mediengesetz
 
-- **Medieninhaber:** [Vorname Nachname]
-- **Wohnort:** [Ort], Österreich
 - **Kontakt:** über GitHub, [@K0RBI02](https://github.com/K0RBI02)
 - **Grundlegende Richtung:** Erklärende Artikel über Netzwerke, Internetanschlüsse,
   IT‑Sicherheit und Server für Privatpersonen und kleine Unternehmen.
