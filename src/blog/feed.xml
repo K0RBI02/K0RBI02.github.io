@@ -7,6 +7,33 @@
     <language>en</language>
     <atom:link href="https://k0rbi02.github.io/src/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>No Mobile Signal at Home? Wi‑Fi Calling and What Else Helps</title>
+      <link>https://k0rbi02.github.io/src/blog/no-mobile-signal-at-home/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/no-mobile-signal-at-home/</guid>
+      <description>Why phones lose reception indoors, how Wi‑Fi calling works around it, and which fixes are legal in Austria and which are not.</description>
+      <category>Connectivity</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Tue, 03 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Is Your Line Delivering What You Pay For? Speed Tests Done Right</title>
+      <link>https://k0rbi02.github.io/src/blog/speed-test-and-your-contract/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/speed-test-and-your-contract/</guid>
+      <description>How to measure your connection so the numbers mean something, what your contract really promises, and what to do in Austria when it falls short.</description>
+      <category>Connectivity</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Tue, 03 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>End of Support: What to Do When Devices Stop Getting Updates</title>
+      <link>https://k0rbi02.github.io/src/blog/updates-and-end-of-support/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/updates-and-end-of-support/</guid>
+      <description>The old tablet still works, the NAS still runs. Why missing updates matter, how to find out how long a device is supported, and what to do when it is not.</description>
+      <category>Security</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Tue, 03 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
       <title>DNS: The Quiet Service Every Connection Depends On</title>
       <link>https://k0rbi02.github.io/src/blog/dns-explained/</link>
       <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/dns-explained/</guid>
