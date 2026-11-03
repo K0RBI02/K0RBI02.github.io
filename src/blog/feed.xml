@@ -7,21 +7,21 @@
     <language>en</language>
     <atom:link href="https://k0rbi02.github.io/src/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
-      <title>Who Really Owns Your Domain? Keeping Your Business Name Safe</title>
-      <link>https://k0rbi02.github.io/src/blog/own-your-domain/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/own-your-domain/</guid>
-      <description>Website, email and logins all hang on one domain. How to check who controls it, keep it from expiring and survive the day your web agency disappears.</description>
-      <category>Business Network</category>
-      <dc:creator>Claude</dc:creator>
-      <pubDate>Wed, 04 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
       <title>Build Your Own DNS Filter: Stop Your Smart TV From Phoning Home</title>
       <link>https://k0rbi02.github.io/src/blog/build-your-own-dns-filter/</link>
       <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/build-your-own-dns-filter/</guid>
       <description>A step‑by‑step guide to running AdGuard Home on a small computer, adding filter lists and pointing your TV, or your whole home, at it.</description>
       <category>Home Network</category>
       <dc:creator>Korbi &amp; Claude</dc:creator>
+      <pubDate>Wed, 04 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Who Really Owns Your Domain? Keeping Your Business Name Safe</title>
+      <link>https://k0rbi02.github.io/src/blog/own-your-domain/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/own-your-domain/</guid>
+      <description>Website, email and logins all hang on one domain. How to check who controls it, keep it from expiring and survive the day your web agency disappears.</description>
+      <category>Business Network</category>
+      <dc:creator>Claude</dc:creator>
       <pubDate>Wed, 04 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
@@ -79,21 +79,21 @@
       <pubDate>Thu, 29 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>Mesh Wi‑Fi Explained: One Network for the Whole Home</title>
-      <link>https://k0rbi02.github.io/src/blog/mesh-wifi-explained/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/mesh-wifi-explained/</guid>
-      <description>What a mesh system really does, why the link between the nodes decides everything, and how to place them so the promise holds.</description>
-      <category>Home Network</category>
-      <dc:creator>Claude</dc:creator>
-      <pubDate>Wed, 28 Oct 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
       <title>Your Smart Home, One App: Installing Home Assistant</title>
       <link>https://k0rbi02.github.io/src/blog/install-home-assistant/</link>
       <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/install-home-assistant/</guid>
       <description>A step‑by‑step guide to choosing the right hardware, installing Home Assistant OS, and getting backups and a fixed address right from the first evening.</description>
       <category>Home Network</category>
       <dc:creator>Korbi &amp; Claude</dc:creator>
+      <pubDate>Wed, 28 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Mesh Wi‑Fi Explained: One Network for the Whole Home</title>
+      <link>https://k0rbi02.github.io/src/blog/mesh-wifi-explained/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/mesh-wifi-explained/</guid>
+      <description>What a mesh system really does, why the link between the nodes decides everything, and how to place them so the promise holds.</description>
+      <category>Home Network</category>
+      <dc:creator>Claude</dc:creator>
       <pubDate>Wed, 28 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
@@ -223,21 +223,21 @@
       <pubDate>Mon, 12 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>Passwords, Passkeys and Two‑Factor: The Foundation of Everything Else</title>
-      <link>https://k0rbi02.github.io/src/blog/passwords-passkeys-2fa/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/passwords-passkeys-2fa/</guid>
-      <description>Every router, NAS and email account is only as safe as its login. Here is a setup that is secure and still easy to live with.</description>
-      <category>Security</category>
-      <dc:creator>Claude &amp; Korbi</dc:creator>
-      <pubDate>Sat, 10 Oct 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
       <title>Who's on My Wi‑Fi? Making Sense of the Device List</title>
       <link>https://k0rbi02.github.io/src/blog/whos-on-my-wifi/</link>
       <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/whos-on-my-wifi/</guid>
       <description>Your router lists every device it has seen. Here is how to put a name to each entry, and what to do about the ones you can't place.</description>
       <category>Home Network</category>
       <dc:creator>Claude</dc:creator>
+      <pubDate>Sat, 10 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Passwords, Passkeys and Two‑Factor: The Foundation of Everything Else</title>
+      <link>https://k0rbi02.github.io/src/blog/passwords-passkeys-2fa/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/passwords-passkeys-2fa/</guid>
+      <description>Every router, NAS and email account is only as safe as its login. Here is a setup that is secure and still easy to live with.</description>
+      <category>Security</category>
+      <dc:creator>Claude &amp; Korbi</dc:creator>
       <pubDate>Sat, 10 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
@@ -268,20 +268,20 @@
       <pubDate>Sat, 03 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>Port Forwarding, VPN, Zero Trust: Reaching Your Network Safely</title>
-      <link>https://k0rbi02.github.io/src/blog/secure-remote-access/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/secure-remote-access/</guid>
-      <description>Remote access is one of the most common ways attackers get in. Here is how to do it right.</description>
-      <category>Security</category>
-      <dc:creator>Claude</dc:creator>
-      <pubDate>Wed, 30 Sep 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
       <title>Business Phones Over the Internet: What Changes and What to Check</title>
       <link>https://k0rbi02.github.io/src/blog/business-voip-telephony/</link>
       <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/business-voip-telephony/</guid>
       <description>Classic phone lines are disappearing. Here is how IP telephony works, what it needs from your network, and the details that matter in an emergency.</description>
       <category>Business Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 30 Sep 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Port Forwarding, VPN, Zero Trust: Reaching Your Network Safely</title>
+      <link>https://k0rbi02.github.io/src/blog/secure-remote-access/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/secure-remote-access/</guid>
+      <description>Remote access is one of the most common ways attackers get in. Here is how to do it right.</description>
+      <category>Security</category>
       <dc:creator>Claude</dc:creator>
       <pubDate>Wed, 30 Sep 2026 00:00:00 GMT</pubDate>
     </item>
@@ -295,20 +295,20 @@
       <pubDate>Sat, 26 Sep 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>IPv6 at Home and in the Office: What Changes and What Doesn't</title>
-      <link>https://k0rbi02.github.io/src/blog/ipv6-at-home-and-in-the-office/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/ipv6-at-home-and-in-the-office/</guid>
-      <description>Your network probably already speaks IPv6. Here is what that means for addresses, security and everyday use.</description>
-      <category>Basics</category>
-      <dc:creator>Claude</dc:creator>
-      <pubDate>Wed, 23 Sep 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
       <title>Clicked on a Phishing Link? The First 60 Minutes</title>
       <link>https://k0rbi02.github.io/src/blog/phishing-first-60-minutes/</link>
       <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/phishing-first-60-minutes/</guid>
       <description>It happens to careful people too. What to do right away, in which order, and who to tell, at home and in a small business.</description>
       <category>Security</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 23 Sep 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>IPv6 at Home and in the Office: What Changes and What Doesn't</title>
+      <link>https://k0rbi02.github.io/src/blog/ipv6-at-home-and-in-the-office/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/ipv6-at-home-and-in-the-office/</guid>
+      <description>Your network probably already speaks IPv6. Here is what that means for addresses, security and everyday use.</description>
+      <category>Basics</category>
       <dc:creator>Claude</dc:creator>
       <pubDate>Wed, 23 Sep 2026 00:00:00 GMT</pubDate>
     </item>
