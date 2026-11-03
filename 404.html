@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Page not found</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<script>
+  // GitHub Pages has one 404 page for the whole site. Addresses inside the blog get the blog's own.
+  if (location.pathname.startsWith('/src/blog/') && !location.pathname.startsWith('/src/blog/404')) {
+    location.replace('/src/blog/404.html');
+  }
+</script>
+<style>
+  :root { --bg: #FAFAF8; --ink: #111110; --soft: #4A4744; color-scheme: light dark; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #161514; --ink: #F3F1EC; --soft: #C9C5BD; } }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: var(--bg); color: var(--ink);
+         font: 16px/1.6 ui-sans-serif, system-ui, sans-serif; }
+  main { padding: 24px 16px; max-width: 32rem; }
+  p { color: var(--soft); margin: 0 0 1.5rem; }
+  .code { font: 600 0.875rem ui-monospace, monospace; color: var(--soft); margin: 0 0 0.5rem; }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 0.75rem; letter-spacing: -0.02em; }
+  a { display: inline-block; padding: 0.6rem 1rem; border-radius: 10px; background: var(--ink); color: var(--bg); text-decoration: none; font-weight: 500; }
+</style>
+</head>
+<body>
+<main>
+  <p class="code">404</p>
+  <h1>This page doesn’t exist.</h1>
+  <p>The link may be old, or there was a typo in the address.</p>
+  <a href="/">Back to the start</a>
+</main>
+</body>
+</html>
