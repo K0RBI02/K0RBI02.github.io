@@ -7,22 +7,22 @@
     <language>en</language>
     <atom:link href="https://k0rbi02.github.io/src/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
-      <title>No Mobile Signal at Home? Wi‑Fi Calling and What Else Helps</title>
-      <link>https://k0rbi02.github.io/src/blog/no-mobile-signal-at-home/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/no-mobile-signal-at-home/</guid>
-      <description>Why phones lose reception indoors, how Wi‑Fi calling works around it, and which fixes are legal in Austria and which are not.</description>
-      <category>Connectivity</category>
+      <title>Who Really Owns Your Domain? Keeping Your Business Name Safe</title>
+      <link>https://k0rbi02.github.io/src/blog/own-your-domain/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/own-your-domain/</guid>
+      <description>Website, email and logins all hang on one domain. How to check who controls it, keep it from expiring and survive the day your web agency disappears.</description>
+      <category>Business Network</category>
       <dc:creator>Claude</dc:creator>
-      <pubDate>Tue, 03 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Wed, 04 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>Is Your Line Delivering What You Pay For? Speed Tests Done Right</title>
-      <link>https://k0rbi02.github.io/src/blog/speed-test-and-your-contract/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/speed-test-and-your-contract/</guid>
-      <description>How to measure your connection so the numbers mean something, what your contract really promises, and what to do in Austria when it falls short.</description>
-      <category>Connectivity</category>
-      <dc:creator>Claude</dc:creator>
-      <pubDate>Tue, 03 Nov 2026 00:00:00 GMT</pubDate>
+      <title>Build Your Own DNS Filter: Stop Your Smart TV From Phoning Home</title>
+      <link>https://k0rbi02.github.io/src/blog/build-your-own-dns-filter/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/build-your-own-dns-filter/</guid>
+      <description>A step‑by‑step guide to running AdGuard Home on a small computer, adding filter lists and pointing your TV, or your whole home, at it.</description>
+      <category>Home Network</category>
+      <dc:creator>Korbi &amp; Claude</dc:creator>
+      <pubDate>Wed, 04 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>End of Support: What to Do When Devices Stop Getting Updates</title>
@@ -34,58 +34,22 @@
       <pubDate>Tue, 03 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>DNS: The Quiet Service Every Connection Depends On</title>
-      <link>https://k0rbi02.github.io/src/blog/dns-explained/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/dns-explained/</guid>
-      <description>When the internet &quot;is down&quot; but your connection is fine, DNS is usually the reason. Here is how it works and how to make it reliable.</description>
-      <category>Basics</category>
-      <dc:creator>Claude</dc:creator>
-      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>RAID and NAS: What Disk Arrays Really Protect You From</title>
-      <link>https://k0rbi02.github.io/src/blog/raid-and-nas-explained/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/raid-and-nas-explained/</guid>
-      <description>RAID 0, 1, 5 and 10 explained, which one fits a home or small office NAS, and why none of them replaces a backup.</description>
-      <category>Basics</category>
-      <dc:creator>Claude &amp; Korbi</dc:creator>
-      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>From Your Sofa to the World: How the Internet's Backbone Works</title>
-      <link>https://k0rbi02.github.io/src/blog/how-the-internet-backbone-works/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/how-the-internet-backbone-works/</guid>
-      <description>Exchange points, undersea cables and a protocol built on trust. The journey of a single click, and why it usually ends surprisingly close to home.</description>
-      <category>Basics</category>
-      <dc:creator>Claude</dc:creator>
-      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>Mesh Wi‑Fi Explained: One Network for the Whole Home</title>
-      <link>https://k0rbi02.github.io/src/blog/mesh-wifi-explained/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/mesh-wifi-explained/</guid>
-      <description>What a mesh system really does, why the link between the nodes decides everything, and how to place them so the promise holds.</description>
-      <category>Home Network</category>
-      <dc:creator>Claude</dc:creator>
-      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>Can't Reach Home From Outside? CGNAT, Public IPv4 and Dynamic DNS</title>
-      <link>https://k0rbi02.github.io/src/blog/cgnat-reaching-home-from-outside/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/cgnat-reaching-home-from-outside/</guid>
-      <description>Why port forwarding sometimes does nothing at all, how to find out if your line is shared, and the ways around it.</description>
+      <title>Is Your Line Delivering What You Pay For? Speed Tests Done Right</title>
+      <link>https://k0rbi02.github.io/src/blog/speed-test-and-your-contract/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/speed-test-and-your-contract/</guid>
+      <description>How to measure your connection so the numbers mean something, what your contract really promises, and what to do in Austria when it falls short.</description>
       <category>Connectivity</category>
       <dc:creator>Claude</dc:creator>
       <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>IP Addresses, DHCP and NAT: How Your Devices Get Online</title>
-      <link>https://k0rbi02.github.io/src/blog/ip-addresses-dhcp-nat/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/ip-addresses-dhcp-nat/</guid>
-      <description>What happens in the first second after a phone joins your Wi‑Fi, and why it explains so many everyday network problems.</description>
-      <category>Basics</category>
+      <title>No Mobile Signal at Home? Wi‑Fi Calling and What Else Helps</title>
+      <link>https://k0rbi02.github.io/src/blog/no-mobile-signal-at-home/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/no-mobile-signal-at-home/</guid>
+      <description>Why phones lose reception indoors, how Wi‑Fi calling works around it, and which fixes are legal in Austria and which are not.</description>
+      <category>Connectivity</category>
       <dc:creator>Claude</dc:creator>
-      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sun, 01 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Closet Rack, Colocation or Cloud: Where Should Your Servers Live?</title>
@@ -94,34 +58,52 @@
       <description>What a data centre actually does for you, what colocation costs in effort, and when a small business is better off with the cloud or a well-kept closet.</description>
       <category>Server Room</category>
       <dc:creator>Claude</dc:creator>
-      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>The 3‑2‑1 Rule: Backups That Survive Real Life</title>
-      <link>https://k0rbi02.github.io/src/blog/backups-3-2-1/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/backups-3-2-1/</guid>
-      <description>Theft, ransomware, a dropped laptop. A simple rule decides whether you lose an afternoon or years of work.</description>
-      <category>Security</category>
-      <dc:creator>Claude &amp; Korbi</dc:creator>
       <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>One Cable Beats Any Gadget: Network Cabling at Home</title>
-      <link>https://k0rbi02.github.io/src/blog/home-network-cabling/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/home-network-cabling/</guid>
-      <description>Building, renovating or just fed up with weak Wi‑Fi upstairs? A few cables in the right places solve problems no repeater can.</description>
-      <category>Home Network</category>
-      <dc:creator>Claude &amp; Korbi</dc:creator>
+      <title>IP Addresses, DHCP and NAT: How Your Devices Get Online</title>
+      <link>https://k0rbi02.github.io/src/blog/ip-addresses-dhcp-nat/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/ip-addresses-dhcp-nat/</guid>
+      <description>What happens in the first second after a phone joins your Wi‑Fi, and why it explains so many everyday network problems.</description>
+      <category>Basics</category>
+      <dc:creator>Claude</dc:creator>
       <pubDate>Fri, 30 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>Why Your Wi‑Fi Is Slow (and It's Rarely the Internet)</title>
-      <link>https://k0rbi02.github.io/src/blog/why-your-wifi-is-slow/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/why-your-wifi-is-slow/</guid>
-      <description>Most speed problems happen inside the building. Here is how to find and fix them.</description>
+      <title>Can't Reach Home From Outside? CGNAT, Public IPv4 and Dynamic DNS</title>
+      <link>https://k0rbi02.github.io/src/blog/cgnat-reaching-home-from-outside/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/cgnat-reaching-home-from-outside/</guid>
+      <description>Why port forwarding sometimes does nothing at all, how to find out if your line is shared, and the ways around it.</description>
+      <category>Connectivity</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Thu, 29 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Mesh Wi‑Fi Explained: One Network for the Whole Home</title>
+      <link>https://k0rbi02.github.io/src/blog/mesh-wifi-explained/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/mesh-wifi-explained/</guid>
+      <description>What a mesh system really does, why the link between the nodes decides everything, and how to place them so the promise holds.</description>
       <category>Home Network</category>
       <dc:creator>Claude</dc:creator>
       <pubDate>Wed, 28 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Your Smart Home, One App: Installing Home Assistant</title>
+      <link>https://k0rbi02.github.io/src/blog/install-home-assistant/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/install-home-assistant/</guid>
+      <description>A step‑by‑step guide to choosing the right hardware, installing Home Assistant OS, and getting backups and a fixed address right from the first evening.</description>
+      <category>Home Network</category>
+      <dc:creator>Korbi &amp; Claude</dc:creator>
+      <pubDate>Wed, 28 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>From Your Sofa to the World: How the Internet's Backbone Works</title>
+      <link>https://k0rbi02.github.io/src/blog/how-the-internet-backbone-works/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/how-the-internet-backbone-works/</guid>
+      <description>Exchange points, undersea cables and a protocol built on trust. The journey of a single click, and why it usually ends surprisingly close to home.</description>
+      <category>Basics</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Tue, 27 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>A One‑Second Power Cut, a Ten‑Minute Outage: Why Networks Need a UPS</title>
@@ -133,6 +115,15 @@
       <pubDate>Mon, 26 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
+      <title>DNS: The Quiet Service Every Connection Depends On</title>
+      <link>https://k0rbi02.github.io/src/blog/dns-explained/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/dns-explained/</guid>
+      <description>When the internet &quot;is down&quot; but your connection is fine, DNS is usually the reason. Here is how it works and how to make it reliable.</description>
+      <category>Basics</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Sun, 25 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
       <title>Matter, Thread, Zigbee: A Smart Home That Works Without the Cloud</title>
       <link>https://k0rbi02.github.io/src/blog/smart-home-matter-thread-zigbee/</link>
       <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/smart-home-matter-thread-zigbee/</guid>
@@ -140,6 +131,15 @@
       <category>Home Network</category>
       <dc:creator>Claude</dc:creator>
       <pubDate>Sat, 24 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>One Cable Beats Any Gadget: Network Cabling at Home</title>
+      <link>https://k0rbi02.github.io/src/blog/home-network-cabling/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/home-network-cabling/</guid>
+      <description>Building, renovating or just fed up with weak Wi‑Fi upstairs? A few cables in the right places solve problems no repeater can.</description>
+      <category>Home Network</category>
+      <dc:creator>Claude &amp; Korbi</dc:creator>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Fifteen Minutes for Your Router: A Security Checklist</title>
@@ -151,13 +151,22 @@
       <pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>Fiber, Cable, DSL or 5G: What Your Connection Really Delivers</title>
-      <link>https://k0rbi02.github.io/src/blog/fiber-cable-dsl-5g/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/fiber-cable-dsl-5g/</guid>
-      <description>The advertised speed is only half the story. Latency, upload and stability matter just as much.</description>
-      <category>Connectivity</category>
+      <title>Guests, Gadgets and You: Segmenting Your Home Network</title>
+      <link>https://k0rbi02.github.io/src/blog/segmenting-your-home-network/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/segmenting-your-home-network/</guid>
+      <description>Why your smart TV and your work laptop should not share the same network — and how to separate them.</description>
+      <category>Security</category>
       <dc:creator>Claude</dc:creator>
       <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>The 3‑2‑1 Rule: Backups That Survive Real Life</title>
+      <link>https://k0rbi02.github.io/src/blog/backups-3-2-1/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/backups-3-2-1/</guid>
+      <description>Theft, ransomware, a dropped laptop. A simple rule decides whether you lose an afternoon or years of work.</description>
+      <category>Security</category>
+      <dc:creator>Claude &amp; Korbi</dc:creator>
+      <pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Wi‑Fi 6, 6E and 7: What the Numbers Really Mean</title>
@@ -169,6 +178,15 @@
       <pubDate>Mon, 19 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
+      <title>Why Your Wi‑Fi Is Slow (and It's Rarely the Internet)</title>
+      <link>https://k0rbi02.github.io/src/blog/why-your-wifi-is-slow/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/why-your-wifi-is-slow/</guid>
+      <description>Most speed problems happen inside the building. Here is how to find and fix them.</description>
+      <category>Home Network</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Sun, 18 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
       <title>SPF, DKIM, DMARC: Making Your Business Email Trustworthy</title>
       <link>https://k0rbi02.github.io/src/blog/email-spf-dkim-dmarc/</link>
       <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/email-spf-dkim-dmarc/</guid>
@@ -178,12 +196,21 @@
       <pubDate>Sat, 17 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>Guests, Gadgets and You: Segmenting Your Home Network</title>
-      <link>https://k0rbi02.github.io/src/blog/segmenting-your-home-network/</link>
-      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/segmenting-your-home-network/</guid>
-      <description>Why your smart TV and your work laptop should not share the same network — and how to separate them.</description>
-      <category>Security</category>
+      <title>Fiber, Cable, DSL or 5G: What Your Connection Really Delivers</title>
+      <link>https://k0rbi02.github.io/src/blog/fiber-cable-dsl-5g/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/fiber-cable-dsl-5g/</guid>
+      <description>The advertised speed is only half the story. Latency, upload and stability matter just as much.</description>
+      <category>Connectivity</category>
       <dc:creator>Claude</dc:creator>
+      <pubDate>Fri, 16 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>RAID and NAS: What Disk Arrays Really Protect You From</title>
+      <link>https://k0rbi02.github.io/src/blog/raid-and-nas-explained/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/raid-and-nas-explained/</guid>
+      <description>RAID 0, 1, 5 and 10 explained, which one fits a home or small office NAS, and why none of them replaces a backup.</description>
+      <category>Basics</category>
+      <dc:creator>Claude &amp; Korbi</dc:creator>
       <pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
