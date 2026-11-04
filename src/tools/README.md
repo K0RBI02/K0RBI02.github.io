@@ -1,9 +1,10 @@
 # toKIT
 
 The small tools you need now and then, without the paywall, the ads or the "sign up to download".
-Everything runs in your browser and your files never leave your device. There are two exceptions: the
-currency converter fetches the European Central Bank's rates from frankfurter.dev, and short links send
-the address you enter to is.gd.
+Everything runs in your browser and your files never leave your device. Three tools go online with what
+you type, never with your files: the currency converter fetches the European Central Bank's rates from
+frankfurter.dev, short links send the address you enter to is.gd, and checking a website's Open Graph tags
+sends its address to microlink.io.
 
 ## How it works
 

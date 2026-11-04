@@ -1,5 +1,6 @@
 // Open Graph images: design the picture a link shows when it is shared, preview it, get the tags.
-// Pasted page source is only parsed, never run, and nothing here goes online.
+// Making an image stays on the device. Checking a website goes online: browsers may not read other
+// sites, so microlink.io fetches the page's <head> for us. Whatever comes back is only parsed, never run.
 
 const OG_W = 1200, OG_H = 630;
 const OG_TITLE_MAX = 60, OG_DESC_MAX = 160;
@@ -168,16 +169,123 @@ function ogTagsFor({ title, desc, site, url, imageUrl }) {
   ].filter(Boolean).join('\n');
 }
 
+// Shows a preview large, on top of everything. <dialog> brings Esc and focus handling with it.
+function ogShowLarge(content) {
+  const dialog = h('dialog', { class: 'og-zoom', 'aria-label': 'Larger preview' },
+    h('div', { class: 'og-zoom-body' }, content),
+    iconBtn('remove', 'Close', () => dialog.close(), 'og-zoom-close'),
+  );
+  dialog.addEventListener('close', () => dialog.remove());
+  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });   // the backdrop
+  document.body.append(dialog);
+  dialog.showModal();
+}
+
+// Makes el open a large version of itself, by click or keyboard
+function ogZoomable(el, label, content) {
+  el.classList.add('og-zoomable');
+  el.setAttribute('role', 'button');
+  el.setAttribute('tabindex', '0');
+  el.setAttribute('aria-label', label);
+  el.addEventListener('click', () => ogShowLarge(content()));
+  el.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    ogShowLarge(content());
+  });
+  return el;
+}
+
+// The three "how apps show it" cards, used by both modes
+function ogCards() {
+  const images = [], slots = { title: [], desc: [], site: [] };
+  const media = () => {
+    const img = h('img', { alt: '', referrerpolicy: 'no-referrer', hidden: true });
+    const empty = h('span', {}, 'No image');
+    images.push({ img, empty });
+    return h('div', { class: 'og-card-media' }, img, empty);
+  };
+  const slot = (kind, tag, cls) => {
+    const el = h(tag, { class: cls });
+    slots[kind].push(el);
+    return el;
+  };
+  const text = () => h('div', { class: 'og-card-text' }, slot('site', 'small', 'og-card-site'), slot('title', 'strong', 'og-card-title'), slot('desc', 'p', 'og-card-desc'));
+  const card = (label, body) => h('figure', { class: 'og-card-wrap' }, h('figcaption', {}, label),
+    ogZoomable(body, `Show the ${label} preview larger`, () => {
+      const copy = body.cloneNode(true);
+      ['role', 'tabindex', 'aria-label'].forEach((name) => copy.removeAttribute(name));
+      copy.classList.remove('og-zoomable');
+      return copy;
+    }));
+  const el = h('div', { class: 'og-cards' },
+    card('X', h('div', { class: 'og-card og-card--overlay' }, media(), slot('title', 'span', 'og-card-pill'))),
+    card('Facebook, LinkedIn', h('div', { class: 'og-card' }, media(), text())),
+    card('WhatsApp, Discord, Slack', h('div', { class: 'og-card og-card--chat' }, text(), media())),
+  );
+  return {
+    el,
+    setText({ title, desc, site }) {
+      slots.title.forEach((s) => { s.textContent = title; });
+      slots.desc.forEach((s) => { s.textContent = desc; s.hidden = !desc; });
+      slots.site.forEach((s) => { s.textContent = site; s.hidden = !site; });
+    },
+    setImage(src, emptyText = 'No image') {
+      images.forEach(({ img, empty }) => {
+        img.hidden = !src;
+        empty.hidden = !!src;
+        empty.textContent = emptyText;
+        if (src) img.src = src; else img.removeAttribute('src');
+      });
+    },
+  };
+}
+
+// Gets a page's <head> through microlink.io. The free plan only allows a few requests a day.
+async function ogFetchHead(url) {
+  const query = new URLSearchParams({ url, meta: 'false', 'data.head.selector': 'head', 'data.head.attr': 'html' });
+  let response, body;
+  try {
+    response = await fetch(`https://api.microlink.io/?${query}`);
+    body = await response.json();
+  } catch {
+    if (response?.status === 429) throw new Error('The free checks for today are used up. Try again tomorrow, or paste the page source below.');
+    throw new Error('Could not reach the checking service. Check your connection, or paste the page source below.');
+  }
+  if (response.status === 429) throw new Error('The free checks for today are used up. Try again tomorrow, or paste the page source below.');
+  if (body.status !== 'success' || !body.data?.head) throw new Error('That page could not be read. It may be private or block automated visits. You can paste its source below.');
+  return `<html><head>${body.data.head}</head></html>`;
+}
+
+const ogHeading = (text) => h('div', { class: 'panel-head' }, h('h2', {}, text));
+
 tool({
   id: 'og-image',
   cat: 'generate',
   name: 'Open Graph images',
-  desc: 'Make the picture a link shows when it is shared, and preview it.',
-  intro: 'Design a 1200×630 share image, see roughly how apps show it, and copy the tags for your page. Paste a page\'s source to check the tags it already has.',
-  keywords: 'open graph og image social share preview card meta tags twitter x facebook linkedin whatsapp discord link preview',
+  desc: 'Check the picture a link shows when it is shared, or make your own.',
+  intro: 'Check what a website shows when its link is shared, or make a share image for your own page.',
+  keywords: 'open graph og image social share preview card meta tags twitter x facebook linkedin whatsapp discord link preview checker',
   mount(root) {
     const { work, side } = layout(root);
+    const makeView = h('div', { class: 'og-view' });
+    const checkView = h('div', { class: 'og-view' });
+
+    function setMode(mode) {
+      makeView.hidden = mode !== 'make';
+      checkView.hidden = mode !== 'check';
+      side.hidden = mode !== 'make';   // the design options belong to the image only
+      side.parentElement.classList.toggle('og-single', mode !== 'make');
+      modeSwitch.set(mode, false);
+    }
+    const modeSwitch = segmented([['check', 'Check a website'], ['make', 'Make an image']], 'check', setMode, 'What do you want to do?');
+    modeSwitch.classList.add('og-mode');
+    root.insertBefore(modeSwitch, root.firstChild);
+
+    // ---------- Make an image ----------
+
     const canvas = h('canvas', { class: 'og-canvas', width: OG_W, height: OG_H, role: 'img', 'aria-label': 'Preview of your share image' });
+    ogZoomable(canvas, 'Show your share image larger', () => h('img', { class: 'og-canvas', src: canvas.toDataURL('image/png'), alt: 'Your share image' }));
     let photo = null;
 
     const title = textInput({ placeholder: 'What the page is about', oninput: () => redraw() });
@@ -216,58 +324,10 @@ tool({
       },
     });
 
-    // ---- How it will look in apps ----
-
-    const cardImages = [];
-    const cardImage = () => {
-      const img = h('img', { alt: '' });
-      cardImages.push(img);
-      return img;
-    };
-    const textSlots = { title: [], desc: [], site: [] };
-    const slot = (kind, tag, cls) => {
-      const el = h(tag, { class: cls });
-      textSlots[kind].push(el);
-      return el;
-    };
-    const card = (label, ...body) => h('figure', { class: 'og-card-wrap' }, h('figcaption', {}, label), ...body);
-    const cards = h('div', { class: 'og-cards' },
-      card('X', h('div', { class: 'og-card og-card--overlay' }, cardImage(), slot('title', 'span', 'og-card-pill'))),
-      card('Facebook, LinkedIn', h('div', { class: 'og-card' }, cardImage(), h('div', { class: 'og-card-text' },
-        slot('site', 'small', 'og-card-site'), slot('title', 'strong', 'og-card-title'), slot('desc', 'p', 'og-card-desc')))),
-      card('WhatsApp, Discord, Slack', h('div', { class: 'og-card og-card--chat' }, h('div', { class: 'og-card-text' },
-        slot('site', 'small', 'og-card-site'), slot('title', 'strong', 'og-card-title'), slot('desc', 'p', 'og-card-desc')), cardImage())),
-    );
-
-    // ---- The tags ----
-
+    const makeCards = ogCards();
     const tagsOut = textArea({ readOnly: true, rows: 9, class: 'input og-tags', 'aria-label': 'Meta tags for your page' });
     const copyTags = button('Copy tags', () => copyText(tagsOut.value, 'Tags copied'), 'small');
     const lengthNote = h('p', { class: 'note' });
-
-    // ---- Check an existing page ----
-
-    const source = textArea({ placeholder: '<!doctype html>…', style: { minHeight: '110px' } });
-    const findings = h('div', { class: 'og-findings' });
-    const readSource = button('Check tags', () => {
-      if (!source.value.trim()) { toast('Paste the page source first.'); return; }
-      const tags = ogReadTags(source.value);
-      title.value = tags.title || tags.plainTitle;
-      desc.value = tags.desc || tags.plainDesc;
-      url.value = tags.url || tags.canonical;
-      site.value = tags.site || ogHost(url.value);
-      imageUrl.value = /^https?:\/\//i.test(tags.image) ? tags.image : '';
-      const problems = ogReport(tags);
-      findings.replaceChildren(
-        problems.length
-          ? h('div', { class: 'error-box' }, h('strong', {}, plural(problems.length, 'thing'), ' to fix'), h('ul', {}, problems.map((p) => h('li', {}, p))))
-          : h('p', { class: 'note' }, 'All the main tags are there.'),
-        tags.image ? h('p', { class: 'note' }, 'The preview shows a new image, not the page\'s own. To use that one, save it and add it under Image.') : null,
-      );
-      redraw();
-    }, 'small');
-
-    // ---- Keeping it all in step ----
 
     const values = () => ({
       title: title.value.trim(),
@@ -277,27 +337,14 @@ tool({
       imageUrl: imageUrl.value.trim(),
     });
 
-    const refreshCards = debounce(() => {
-      const src = canvas.toDataURL('image/jpeg', 0.8);
-      cardImages.forEach((img) => { img.src = src; });
-    }, 150);
+    const refreshCards = debounce(() => makeCards.setImage(canvas.toDataURL('image/jpeg', 0.8)), 150);
 
     function redraw() {
       const v = values();
-      ogRender(canvas, {
-        title: v.title || 'What the page is about',
-        desc: v.desc,
-        site: v.site,
-        layout: style.value,
-        bg: bg.value,
-        accent: accent.value,
-        img: photo,
-      });
+      const shownTitle = v.title || 'What the page is about';
+      ogRender(canvas, { title: shownTitle, desc: v.desc, site: v.site, layout: style.value, bg: bg.value, accent: accent.value, img: photo });
       refreshCards();
-
-      textSlots.title.forEach((el) => { el.textContent = v.title || 'What the page is about'; });
-      textSlots.desc.forEach((el) => { el.textContent = v.desc; el.hidden = !v.desc; });
-      textSlots.site.forEach((el) => { el.textContent = v.site; el.hidden = !v.site; });
+      makeCards.setText({ title: shownTitle, desc: v.desc, site: v.site });
 
       titleCount.textContent = `${title.value.length}/${OG_TITLE_MAX}`;
       descCount.textContent = `${desc.value.length}/${OG_DESC_MAX}`;
@@ -313,8 +360,7 @@ tool({
 
     const fileName = () => (title.value.trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 40) || 'og-image');
     const save = button('Download image', () => busy(save, async () => {
-      const type = `image/${format.value}`;
-      const blob = await canvasToBlob(canvas, type, 0.9);
+      const blob = await canvasToBlob(canvas, `image/${format.value}`, 0.9);
       downloadBlob(blob, `${fileName()}.${format.value === 'jpeg' ? 'jpg' : 'png'}`);
       toast(`Saved, ${formatBytes(blob.size)}`);
     }), 'primary');
@@ -325,29 +371,29 @@ tool({
       } catch { toast('Copying images is blocked here. Download it instead.'); }
     }), 'quiet small');
 
-    work.append(
+    makeView.append(
       h('div', { class: 'panel og-form' },
+        ogHeading('1. Write your text'),
         field('Title', title, { value: titleCount }),
         field('Description', desc, { value: descCount }),
-        field('Site name', site, { hint: 'Leave it empty to use the page address.' }),
+        field('Site name', site, { hint: 'Shown at the bottom of the image.' }),
         lengthNote,
       ),
+      ogHeading('2. See your image'),
       h('div', { class: 'code-preview og-stage' }, canvas),
-      cards,
-      h('p', { class: 'note' }, 'Every app draws these a little differently, so treat them as a close guess.'),
+      makeCards.el,
+      h('p', { class: 'note' }, 'Click a preview to see it larger. Every app draws these a little differently, so treat them as a close guess.'),
       h('div', { class: 'panel og-form' },
+        ogHeading('3. Add it to your page'),
+        h('p', { class: 'note' }, 'Upload the image to your website, fill in both addresses, and paste the tags into your page\'s <head>.'),
         field('Page address', url),
-        field('Address of the image', imageUrl, { hint: 'Where the file will be once you upload it. It has to be a full https:// address.' }),
-        ogGroup('Tags for your page\'s <head>', tagsOut),
+        field('Address of the image', imageUrl, { hint: 'It has to be a full https:// address.' }),
+        ogGroup('Tags', tagsOut),
         h('div', { class: 'row' }, copyTags),
-      ),
-      h('div', { class: 'panel og-form' },
-        field('Check an existing page', source, { hint: 'Open the page, view its source (Ctrl+U), and paste it here. It is read on your device.' }),
-        h('div', { class: 'row' }, readSource),
-        findings,
       ),
     );
     side.append(
+      ogHeading('Design your image'),
       ogGroup('Layout', style),
       ogGroup('Colours', h('div', { class: 'row' }, bg, h('span', { class: 'note' }, 'background'), accent, h('span', { class: 'note' }, 'accent'))),
       ogGroup('Image', [zone, removePhoto]),
@@ -355,9 +401,101 @@ tool({
       actions(save, copy),
     );
 
+    // ---------- Check a website ----------
+
+    const address = textInput({
+      type: 'url', inputmode: 'url', autocomplete: 'off', placeholder: 'https://example.com',
+      oninput: () => { addressProblem.hidden = true; checkBtn.disabled = !shortNormalize(address.value); },
+      onblur: () => { addressProblem.hidden = !address.value.trim() || !!shortNormalize(address.value); },
+      onkeydown: (e) => { if (e.key === 'Enter' && !checkBtn.disabled) checkBtn.click(); },
+    });
+    const addressProblem = h('p', { class: 'field-hint short-problem', hidden: true }, 'That does not look like a web address. It should look like example.com/page.');
+    const report = h('div', { class: 'og-view' });
+
+    function showReport(html, { pageUrl = '', loadNow = false } = {}) {
+      const tags = ogReadTags(html);
+      const shown = {
+        title: tags.title || tags.plainTitle || 'No title',
+        desc: tags.desc || tags.plainDesc,
+        url: tags.url || tags.canonical || pageUrl,
+      };
+      shown.site = tags.site || ogHost(shown.url);
+      const problems = ogReport(tags);
+      const canLoad = /^https:\/\//i.test(tags.image);
+
+      const cards = ogCards();
+      cards.setText(shown);
+      cards.setImage(canLoad && loadNow ? tags.image : '', canLoad ? 'Image not loaded yet' : 'No image');
+      const loadImageBtn = button('Load the page\'s image', () => {
+        cards.setImage(tags.image);
+        loadImageBtn.hidden = true;
+      }, 'small');
+
+      const reuse = button('Make a new image with this text', () => {
+        title.value = tags.title || tags.plainTitle;
+        desc.value = shown.desc;
+        site.value = shown.site;
+        url.value = shown.url;
+        imageUrl.value = '';
+        redraw();
+        setMode('make');
+        modeSwitch.scrollIntoView({ block: 'nearest' });
+      }, 'small');
+
+      report.replaceChildren(
+        ogHeading('What this page shows'),
+        problems.length
+          ? h('div', { class: 'error-box' }, h('strong', {}, plural(problems.length, 'thing'), ' to fix'), h('ul', {}, problems.map((p) => h('li', {}, p))))
+          : h('p', { class: 'note' }, 'All the main tags are there.'),
+        cards.el,
+        h('p', { class: 'note' }, 'Click a preview to see it larger.'),
+        h('div', { class: 'row' }, canLoad && !loadNow ? loadImageBtn : null, reuse),
+      );
+    }
+
+    const checkBtn = button('Check website', () => busy(checkBtn, async () => {
+      const page = shortNormalize(address.value);
+      report.replaceChildren();
+      fallback.hidden = true;
+      try {
+        showReport(await ogFetchHead(page), { pageUrl: page, loadNow: true });
+      } catch (err) {
+        report.replaceChildren(h('div', { class: 'error-box' }, err.message));
+        fallback.hidden = false;
+      }
+    }), 'primary');
+    checkBtn.disabled = true;
+
+    // Only offered when the link did not work
+    const source = textArea({ placeholder: '<!doctype html>…', style: { minHeight: '120px' } });
+    const fallback = h('div', { class: 'panel og-form', hidden: true },
+      ogHeading('Paste the page source instead'),
+      h('p', { class: 'note' }, 'Open the website on a computer, press Ctrl+U (⌥⌘U on a Mac), copy everything and paste it here. This stays on your device.'),
+      field('Page source', source),
+      h('div', { class: 'row' }, button('Check this source', () => {
+        const html = source.value.trim();
+        if (!html.includes('<')) { toast('Paste the page source first.'); return; }
+        showReport(html);
+      }, 'small')),
+    );
+
+    checkView.append(
+      h('div', { class: 'panel og-form' },
+        h('div', { class: 'field' }, field('Website address', address), addressProblem),
+        h('p', { class: 'note' }, 'This goes online: the address is sent to microlink.io, which reads the page, and the page\'s image loads from its website. Only a few checks a day are free.'),
+        h('div', { class: 'row' }, checkBtn),
+      ),
+      report,
+      fallback,
+    );
+
+    work.append(makeView, checkView);
+    setMode('check');
     redraw();
     // Canvas text only uses a web font once it has loaded
     Promise.all([document.fonts.load(`700 84px ${OG_SANS}`), document.fonts.load(`400 34px ${OG_SANS}`), document.fonts.load(`500 26px ${OG_MONO}`)])
       .then(redraw, () => {});
+
+    return () => document.querySelector('.og-zoom')?.remove();
   },
 });
