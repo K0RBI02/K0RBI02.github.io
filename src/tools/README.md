@@ -1,8 +1,9 @@
 # toKIT
 
 The small tools you need now and then, without the paywall, the ads or the "sign up to download".
-Everything runs in your browser and your files never leave your device. The one exception is the
-currency converter, which fetches the European Central Bank's rates from frankfurter.dev.
+Everything runs in your browser and your files never leave your device. There are two exceptions: the
+currency converter fetches the European Central Bank's rates from frankfurter.dev, and short links send
+the address you enter to is.gd.
 
 ## How it works
 
@@ -21,7 +22,7 @@ shows what is going on, including every file you save.
 - **Office**: Word to PDF, text or HTML, Excel to CSV or JSON, CSV to Excel, text from slides, images from Office files
 - **Audio & video**: trim audio, convert audio (MP3, WAV), video to MP3, trim a video, video to GIF
 - **Text & files**: word counter, text case, compare texts, format JSON, Base64, URL encode, checksums, sort & clean lines, open a ZIP, make a ZIP
-- **Generators**: QR codes, barcodes, passwords, UUIDs, colour palettes, random picker, placeholder text
+- **Generators**: QR codes, barcodes, passwords, UUIDs, colour palettes, random picker, placeholder text, Open Graph images, short links
 - **Converters**: units, currency, time zones, Unix timestamps, number systems, colour formats, dates, percentages
 
 Tools that need a bigger download load it the first time you use them and then run on your device:

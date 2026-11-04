@@ -673,3 +673,33 @@ input[type="color"] { width: 40px; height: 40px; padding: 0; border: 0; backgrou
 .percent-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 18px; }
 .percent-row .input.is-big { width: 130px; font-size: 22px; font-weight: 600; min-height: 52px; }
 .percent-out { min-width: 110px; font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* ---------- Open Graph images ---------- */
+
+.og-form { display: grid; gap: 16px; }
+.og-stage { min-height: 0; padding: 16px; }
+.og-count { font-family: var(--font-mono); font-weight: 500; font-size: 13px; color: var(--ink-soft); }
+.og-canvas { display: block; width: 100%; height: auto; border-radius: 8px; box-shadow: 0 12px 32px -16px rgba(17,17,16,.4); }
+.og-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; align-items: start; }
+.og-card-wrap { margin: 0; display: grid; gap: 8px; min-width: 0; }
+.og-card-wrap figcaption { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+.og-card { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); }
+.og-card img { display: block; width: 100%; aspect-ratio: 1200 / 630; object-fit: cover; background: var(--sunken); }
+.og-card-text { display: grid; gap: 4px; padding: 10px 12px; min-width: 0; }
+.og-card-site { font-size: 12px; color: var(--ink-soft); overflow-wrap: anywhere; }
+.og-card-title { font-size: 15px; line-height: 1.3; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+.og-card-desc { margin: 0; font-size: 13px; line-height: 1.4; color: var(--ink-soft); overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+.og-card-pill { position: absolute; left: 8px; bottom: 8px; max-width: calc(100% - 16px); padding: 2px 8px; border-radius: 6px; background: rgba(0,0,0,.65); color: #fff; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.og-card--chat { border-left: 4px solid var(--accent); }
+.og-card--chat img { border-radius: 0 0 8px 0; }
+.og-tags { min-height: 190px; font: 13px/1.5 var(--font-mono); white-space: pre; overflow-x: auto; }
+.og-findings { display: grid; gap: 8px; }
+.og-findings:empty { display: none; }
+.og-findings ul { margin: 8px 0 0; padding-left: 20px; }
+
+/* ---------- Short links ---------- */
+
+.short-problem { color: var(--bad); }
+.short-result { display: grid; gap: 8px; }
+.short-result:empty { display: none; }
+.short-target { overflow-wrap: anywhere; }

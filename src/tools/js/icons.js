@@ -56,6 +56,8 @@ const TOOL_ICONS = {
   'timestamp': DOODLE(`<path d="M50 14 C 72 13, 88 30, 88 52 C 88 74, 72 90, 50 90 C 28 90, 12 74, 12 52 C 12 30, 28 13, 50 14 Z"/><path ${A} d="M50 30 L 50 54 L 66 62"/><path d="M38 8 L 62 8"/>`),
   'number-base': DOODLE(`<path d="M16 26 L 22 22 L 22 46 M 16 46 L 28 46 M 40 22 C 52 22, 52 46, 40 46 C 28 46, 28 22, 40 22 Z M 60 26 L 66 22 L 66 46 M 60 46 L 72 46"/><path ${A} d="M14 64 L 22 64 L 22 84 M 34 64 C 42 62, 46 70, 40 76 L 32 84 L 46 84 M 58 64 L 74 64 L 64 74 C 72 72, 76 84, 64 86"/>`),
   'color-converter': DOODLE(`<path d="M22 12 L 40 12 L 40 88 L 22 88 Z M 42 12 L 60 12 L 60 88 L 42 88 Z" /><path ${A} d="M62 12 L 80 12 L 80 88 L 62 88 Z"/>`),
+  'og-image': DOODLE(`<path d="M8 14 C 30 13, 70 14, 92 13 C 93 36, 91 58, 92 80 C 70 81, 30 79, 9 80 C 7 58, 9 36, 8 14 Z"/><path d="M20 32 L 62 32 M 20 46 L 48 46"/><path ${A} d="M20 64 C 30 56, 40 72, 54 62"/><path d="M62 92 L 74 80 L 84 92"/>`),
+  'short-url': DOODLE(`<path d="M38 60 C 30 68, 20 68, 14 60 C 8 52, 10 44, 18 38 L 28 30 C 36 24, 46 26, 50 34"/><path d="M62 40 C 70 32, 80 32, 86 40 C 92 48, 90 56, 82 62 L 72 70 C 64 76, 54 74, 50 66"/><path ${A} d="M30 88 L 70 88 M 38 80 L 30 88 L 38 96 M 62 80 L 70 88 L 62 96"/>`),
   'url-encode': DOODLE(`<path d="M42 58 C 34 66, 22 66, 16 58 C 10 50, 12 40, 20 34 L 30 26 C 38 20, 50 22, 54 30"/><path ${A} d="M58 42 C 66 34, 78 34, 84 42 C 90 50, 88 60, 80 66 L 70 74 C 62 80, 50 78, 46 70"/>`),
 };
 
@@ -71,5 +73,5 @@ const TOOL_COLORS = {
   'heic-to-jpg': 'peach', 'ocr': 'sage', 'remove-background': 'lilac', 'zip-open': 'apricot', 'zip-create': 'cream',
   'video-trim': 'blue', 'video-to-gif': 'apricot', 'qr': 'cream', 'barcode': 'blue', 'date-calc': 'rose', 'percent': 'peach',
   'password': 'lilac', 'uuid': 'cream', 'random': 'apricot', 'lorem-ipsum': 'blue', 'color-palette': 'rose',
-  'units': 'sage', 'currency': 'peach', 'time-zones': 'blue', 'timestamp': 'cream', 'number-base': 'lilac', 'color-converter': 'apricot', 'url-encode': 'rose',
+  'units': 'sage', 'currency': 'peach', 'time-zones': 'blue', 'timestamp': 'cream', 'number-base': 'lilac', 'color-converter': 'apricot', 'url-encode': 'rose', 'og-image': 'peach', 'short-url': 'sage',
 };

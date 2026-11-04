@@ -111,7 +111,7 @@ tool({
     const all = h('div', { class: 'list' });
     const holder = h('div', { class: 'panel' }, status);
     work.append(holder, field('Popular currencies', all));
-    side.append(h('p', { class: 'note' }, 'The only tool here that goes online: it asks frankfurter.dev for the European Central Bank\'s reference rates. Nothing about you is sent.'));
+    side.append(h('p', { class: 'note' }, 'This tool goes online: it asks frankfurter.dev for the European Central Bank\'s reference rates. Nothing about you is sent.'));
     fetchRates().then(({ date, rates }) => {
       const codes = Object.keys(rates).sort();
       const units = codes.map((c) => [c, `${c}  ${CURRENCY_NAMES.of(c)}`]);
