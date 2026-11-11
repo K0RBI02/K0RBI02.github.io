@@ -7,6 +7,15 @@
     <language>en</language>
     <atom:link href="https://k0rbi02.github.io/src/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>Is Your Line Delivering What You Pay For? Speed Tests Done Right</title>
+      <link>https://k0rbi02.github.io/src/blog/speed-test-and-your-contract/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/speed-test-and-your-contract/</guid>
+      <description>How to measure your connection so the numbers mean something, what your contract really promises, and what to do in Austria when it falls short.</description>
+      <category>Connectivity</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 11 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
       <title>No Mobile Signal at Home? Wi‑Fi Calling and What Else Helps</title>
       <link>https://k0rbi02.github.io/src/blog/no-mobile-signal-at-home/</link>
       <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/no-mobile-signal-at-home/</guid>
