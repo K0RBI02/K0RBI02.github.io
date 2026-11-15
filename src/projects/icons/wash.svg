@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- the laundry pile -->
+  <path d="M19.9 35.4 Q 22.1 18.9 36.4 22.2 Q 43.0 9.0 58.4 16.7 Q 70.5 12.3 77.1 26.6 Q 81.5 31.0 79.3 36.5"/>
+  <path d="M40.8 23.3 Q 45.2 28.8 51.8 24.4" stroke-width="3"/>
+  <path d="M65.0 20.0 Q 68.3 25.5 65.0 31.0" stroke-width="3"/>
+  <!-- rim and basket -->
+  <path d="M10.0 43.1 Q 10.0 37.6 15.5 37.6 L 82.6 36.5 Q 88.1 36.5 88.1 42.0 L 88.1 45.3 L 10.0 46.4 Z"/>
+  <path d="M14.4 47.5 L 83.7 46.4 L 76.0 87.1 Q 75.5 90.4 71.6 90.4 L 26.5 91.0 Q 22.6 91.0 22.1 87.7 Z"/>
+  <!-- the weave -->
+  <path d="M19.4 60.7 L 79.9 59.6 M22.6 75.0 L 77.1 74.5" stroke-width="3"/>
+  <path d="M37.5 49.7 L 39.7 88.2 M60.6 49.2 L 59.0 88.2" stroke-width="3"/>
+  <!-- a sock hanging over the edge -->
+  <path d="M81.5 40.9 Q 90.3 47.5 87.0 57.4 Q 84.8 62.9 89.2 66.2" stroke-width="3"/>
+</svg>
