@@ -7,6 +7,24 @@
     <language>en</language>
     <atom:link href="https://k0rbi02.github.io/src/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>Map Your Own Wi‑Fi: Find the Dead Spots With Nothing but Your Phone</title>
+      <link>https://k0rbi02.github.io/src/blog/map-your-wifi/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/map-your-wifi/</guid>
+      <description>Walk through your home, measure every room and fix what the numbers show, with a before‑and‑after map to prove it worked.</description>
+      <category>Home Network</category>
+      <dc:creator>Claude &amp; Korbi</dc:creator>
+      <pubDate>Wed, 18 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>End of Support: What to Do When Devices Stop Getting Updates</title>
+      <link>https://k0rbi02.github.io/src/blog/updates-and-end-of-support/</link>
+      <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/updates-and-end-of-support/</guid>
+      <description>The old tablet still works, the NAS still runs. Why missing updates matter, how to find out how long a device is supported, and what to do when it is not.</description>
+      <category>Security</category>
+      <dc:creator>Claude</dc:creator>
+      <pubDate>Wed, 18 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
       <title>Is Your Line Delivering What You Pay For? Speed Tests Done Right</title>
       <link>https://k0rbi02.github.io/src/blog/speed-test-and-your-contract/</link>
       <guid isPermaLink="true">https://k0rbi02.github.io/src/blog/speed-test-and-your-contract/</guid>
