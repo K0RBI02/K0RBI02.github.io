@@ -2,9 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://k0rbi02.github.io/src/blog/</loc>
-<lastmod>2026-11-04T18:00:18Z</lastmod>
+<lastmod>2026-11-04T11:55:54Z</lastmod>
 <changefreq>weekly</changefreq>
 <priority>1</priority>
+</url>
+<url>
+<loc>https://k0rbi02.github.io/src/blog/own-your-domain/</loc>
+<lastmod>2026-11-04T11:55:54Z</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
 </url>
 <url>
 <loc>https://k0rbi02.github.io/src/blog/map-your-wifi/</loc>
